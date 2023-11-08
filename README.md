@@ -7,6 +7,7 @@ This application aims to provide an UI for data cleaning/labelling purposes.
 ### 1. Image deletion
 
 ## Frameworks
+In prog
 
 ## Use Case Diagram
 In prog
