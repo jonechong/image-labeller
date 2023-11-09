@@ -8,6 +8,7 @@ import {
     Snackbar,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
+import AlertDialog from "../components/AlertDialog";
 
 export default function ImageLabeller() {
     const [folderPath, setFolderPath] = useState("");
@@ -15,6 +16,7 @@ export default function ImageLabeller() {
     const [images, setImages] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [alertOpen, setAlertOpen] = useState(false); // State for Snackbar alert
+    const [imagesDeleted, setImagesDeleted] = useState(false);
 
     const handleOpenDialog = async () => {
         const folderPath = await window.api.openDirectoryDialog();
@@ -37,6 +39,7 @@ export default function ImageLabeller() {
                 setImages(newImages);
                 if (newImages.length === 0) {
                     setCurrentImage(null);
+                    setImagesDeleted(true);
                 } else if (currentIndex >= newImages.length) {
                     setCurrentIndex(newImages.length - 1);
                     setCurrentImage(newImages[newImages.length - 1]);
@@ -164,6 +167,12 @@ export default function ImageLabeller() {
                     No more images.
                 </MuiAlert>
             </Snackbar>
+            <AlertDialog
+                dialogOpen={imagesDeleted}
+                setDialogOpen={setImagesDeleted}
+                dialogMessage={"All images have been deleted!"}
+                dialogTitle={"Alert"}
+            />
         </Box>
     );
 }
