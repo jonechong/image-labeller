@@ -106,6 +106,15 @@ export default function ImageLabeller() {
         { label: "Next Image", action: showNextImage, variant: "contained" },
     ];
 
+    const directoryButtons = [
+        {
+            label: "Select Directory",
+            action: handleOpenDialog,
+            variant: "contained",
+        },
+        { label: "Load Images", action: handleImageLoad, variant: "contained" },
+    ];
+
     return (
         <Box sx={{ padding: 2 }}>
             <TextField
@@ -116,19 +125,10 @@ export default function ImageLabeller() {
                 margin="normal"
                 variant="outlined"
             />
-            <Button variant="contained" onClick={handleOpenDialog}>
-                Select Directory
-            </Button>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleImageLoad}
-                sx={{ margin: 1 }}
-            >
-                Load Images
-            </Button>
+            {/* The following shows directory action buttons */}
+            <ActionButtons buttonsConfig={directoryButtons} />
             <ImageView currentImage={currentImage} />
-            {/* The following shows action buttons if there is a current image */}
+            {/* The following shows image action buttons if there is a current image */}
             {currentImage && (
                 <ActionButtons buttonsConfig={imageActionButtons} />
             )}
