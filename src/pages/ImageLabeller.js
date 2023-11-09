@@ -153,6 +153,7 @@ export default function ImageLabeller() {
                 dialogMessage={"All images have been deleted!"}
                 dialogTitle={"Alert"}
             />
+            {/* This alert dialog shows when user clicks load image without selecting a directory */}
             <AlertDialog
                 dialogOpen={invalidDirectory}
                 setDialogOpen={setInvalidDirectory}
