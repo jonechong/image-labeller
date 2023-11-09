@@ -120,6 +120,27 @@ export default function ImageLabeller() {
         { label: "Load Images", action: handleImageLoad, variant: "contained" },
     ];
 
+    const alertDialogConfigs = [
+        {
+            open: imagesDeleted,
+            setOpen: setImagesDeleted,
+            message: "All images have been deleted!",
+            title: "Alert",
+        },
+        {
+            open: invalidDirectory,
+            setOpen: setInvalidDirectory,
+            message: "Please select a valid directory first.",
+            title: "Invalid Directory",
+        },
+        {
+            open: noImages,
+            setOpen: setNoImages,
+            message: "There is no image in this directory.",
+            title: "No Images Found",
+        },
+    ];
+
     return (
         <Box sx={{ padding: 2 }}>
             <TextField
@@ -145,27 +166,15 @@ export default function ImageLabeller() {
                 duration={3000}
                 alertMessage={"No more images."}
             />
-            {/* This alert dialog shows when all images have been deleted */}
-            <AlertDialog
-                dialogOpen={imagesDeleted}
-                setDialogOpen={setImagesDeleted}
-                dialogMessage={"All images have been deleted!"}
-                dialogTitle={"Alert"}
-            />
-            {/* This alert dialog shows when user clicks load image without selecting a directory */}
-            <AlertDialog
-                dialogOpen={invalidDirectory}
-                setDialogOpen={setInvalidDirectory}
-                dialogMessage={"Please select a valid directory first."}
-                dialogTitle={"Invalid Directory"}
-            />
-            {/* This alert dialog shows when user clicks load image when the directory has no image files */}
-            <AlertDialog
-                dialogOpen={noImages}
-                setDialogOpen={setNoImages}
-                dialogMessage={"There is no image in this directory."}
-                dialogTitle={"No Images Found"}
-            />
+            {alertDialogConfigs.map((dialog, index) => (
+                <AlertDialog
+                    key={index}
+                    dialogOpen={dialog.open}
+                    setDialogOpen={dialog.setOpen}
+                    dialogMessage={dialog.message}
+                    dialogTitle={dialog.title}
+                />
+            ))}
         </Box>
     );
 }
