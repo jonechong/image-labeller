@@ -8,7 +8,7 @@ export default function ImageLabeller() {
     const [currentImage, setCurrentImage] = useState(null);
     const [images, setImages] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [alertOpen, setAlertOpen] = useState(false); // State for Snackbar alert
+    const [noMoreImages, setNoMoreImages] = useState(false); // State for Snackbar alert
     const [imagesDeleted, setImagesDeleted] = useState(false);
 
     const handleOpenDialog = async () => {
@@ -61,11 +61,11 @@ export default function ImageLabeller() {
         }
     };
 
-    const handleAlertClose = (event, reason) => {
+    const handleNoMoreImages = (event, reason) => {
         if (reason === "clickaway") {
             return;
         }
-        setAlertOpen(false);
+        setNoMoreImages(false);
     };
 
     const showNextImage = () => {
@@ -73,7 +73,7 @@ export default function ImageLabeller() {
             setCurrentIndex(currentIndex + 1);
             setCurrentImage(images[currentIndex + 1]);
         } else {
-            setAlertOpen(true);
+            setNoMoreImages(true);
         }
     };
 
@@ -82,7 +82,7 @@ export default function ImageLabeller() {
             setCurrentIndex(currentIndex - 1);
             setCurrentImage(images[currentIndex - 1]);
         } else {
-            setAlertOpen(true);
+            setNoMoreImages(true);
         }
     };
 
@@ -147,12 +147,14 @@ export default function ImageLabeller() {
                     </Button>
                 </>
             )}
+            {/* This snackbar shows if there is no more images when user click previous/next */}
             <SnackbarInfoAlert
-                alertOpen={alertOpen}
-                onClose={handleAlertClose}
+                alertOpen={noMoreImages}
+                onClose={handleNoMoreImages}
                 duration={3000}
                 alertMessage={"No more images."}
             />
+            {/* This alert dialog shows when all images have been deleted */}
             <AlertDialog
                 dialogOpen={imagesDeleted}
                 setDialogOpen={setImagesDeleted}
