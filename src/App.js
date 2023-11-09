@@ -1,6 +1,6 @@
 import logo from "./logo.svg";
 import "./App.css";
-import ImageLabeller from "./ImageLabeller";
+import ImageLabeller from "./pages/ImageLabeller";
 
 function App() {
     return (
