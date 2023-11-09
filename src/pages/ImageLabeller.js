@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { TextField, Button, Box, Card, CardMedia } from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
 import AlertDialog from "../components/AlertDialog";
 import SnackbarInfoAlert from "../components/SnackbarInfoAlert";
 import ImageView from "../components/ImageView";
+import ActionButtons from "../components/ActionButtons";
 
 export default function ImageLabeller() {
     const [folderPath, setFolderPath] = useState("");
@@ -90,7 +91,7 @@ export default function ImageLabeller() {
         }
     };
 
-    const buttonsConfig = [
+    const imageActionButtons = [
         {
             label: "Delete Image",
             action: handleDeleteImage,
@@ -114,7 +115,7 @@ export default function ImageLabeller() {
                 onChange={handleDirectoryChange}
                 margin="normal"
                 variant="outlined"
-            />{" "}
+            />
             <Button variant="contained" onClick={handleOpenDialog}>
                 Select Directory
             </Button>
@@ -127,31 +128,9 @@ export default function ImageLabeller() {
                 Load Images
             </Button>
             <ImageView currentImage={currentImage} />
+            {/* The following shows action buttons if there is a current image */}
             {currentImage && (
-                <>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={handleDeleteImage}
-                        sx={{ margin: 1 }}
-                    >
-                        Delete Image
-                    </Button>
-                    <Button
-                        variant="contained"
-                        onClick={showPrevImage}
-                        sx={{ margin: 1 }}
-                    >
-                        Previous Image
-                    </Button>
-                    <Button
-                        variant="contained"
-                        onClick={showNextImage}
-                        sx={{ margin: 1 }}
-                    >
-                        Next Image
-                    </Button>
-                </>
+                <ActionButtons buttonsConfig={imageActionButtons} />
             )}
             {/* This snackbar shows if there is no more images when user click previous/next */}
             <SnackbarInfoAlert
