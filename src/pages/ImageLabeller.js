@@ -1,14 +1,7 @@
 import React, { useState } from "react";
-import {
-    TextField,
-    Button,
-    Box,
-    Card,
-    CardMedia,
-    Snackbar,
-} from "@mui/material";
-import MuiAlert from "@mui/material/Alert";
+import { TextField, Button, Box, Card, CardMedia } from "@mui/material";
 import AlertDialog from "../components/AlertDialog";
+import SnackbarInfoAlert from "../components/SnackbarInfoAlert";
 
 export default function ImageLabeller() {
     const [folderPath, setFolderPath] = useState("");
@@ -154,19 +147,12 @@ export default function ImageLabeller() {
                     </Button>
                 </>
             )}
-            <Snackbar
-                open={alertOpen}
-                autoHideDuration={3000}
+            <SnackbarInfoAlert
+                alertOpen={alertOpen}
                 onClose={handleAlertClose}
-            >
-                <MuiAlert
-                    onClose={handleAlertClose}
-                    severity="info"
-                    sx={{ width: "100%" }}
-                >
-                    No more images.
-                </MuiAlert>
-            </Snackbar>
+                duration={3000}
+                alertMessage={"No more images."}
+            />
             <AlertDialog
                 dialogOpen={imagesDeleted}
                 setDialogOpen={setImagesDeleted}
