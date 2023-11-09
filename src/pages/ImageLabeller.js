@@ -13,6 +13,7 @@ export default function ImageLabeller() {
     const [noMoreImages, setNoMoreImages] = useState(false);
     const [imagesDeleted, setImagesDeleted] = useState(false);
     const [invalidDirectory, setInvalidDirectory] = useState(false);
+    const [noImages, setNoImages] = useState(false);
 
     const openDirectoryDialog = async () => {
         const folderPath = await window.api.openDirectoryDialog();
@@ -58,6 +59,10 @@ export default function ImageLabeller() {
         }
         try {
             const imageFiles = await window.api.readImageFiles(folderPath);
+            if (imageFiles.length === 0) {
+                setNoImages(true);
+                return;
+            }
             setImages(imageFiles);
             setCurrentImage(imageFiles[0]);
             setCurrentIndex(0);
@@ -127,6 +132,7 @@ export default function ImageLabeller() {
             />
             {/* The following shows directory action buttons */}
             <ActionButtons buttonsProps={directoryButtons} />
+            {/* The following shows the image if there is a current image */}
             <ImageView currentImage={currentImage} />
             {/* The following shows image action buttons if there is a current image */}
             {currentImage && (
@@ -152,6 +158,13 @@ export default function ImageLabeller() {
                 setDialogOpen={setInvalidDirectory}
                 dialogMessage={"Please select a valid directory first."}
                 dialogTitle={"Invalid Directory"}
+            />
+            {/* This alert dialog shows when user clicks load image when the directory has no image files */}
+            <AlertDialog
+                dialogOpen={noImages}
+                setDialogOpen={setNoImages}
+                dialogMessage={"There is no image in this directory."}
+                dialogTitle={"No Images Found"}
             />
         </Box>
     );
