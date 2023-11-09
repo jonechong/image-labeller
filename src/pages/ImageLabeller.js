@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TextField, Button, Box, Card, CardMedia } from "@mui/material";
 import AlertDialog from "../components/AlertDialog";
 import SnackbarInfoAlert from "../components/SnackbarInfoAlert";
+import ImageView from "../components/ImageView";
 
 export default function ImageLabeller() {
     const [folderPath, setFolderPath] = useState("");
@@ -107,20 +108,7 @@ export default function ImageLabeller() {
             >
                 Load Images
             </Button>
-            {currentImage && (
-                <Card>
-                    <CardMedia
-                        component="img"
-                        image={currentImage}
-                        alt="Loaded Image"
-                        sx={{
-                            maxHeight: 500,
-                            maxWidth: "100%",
-                            objectFit: "contain",
-                        }}
-                    />
-                </Card>
-            )}
+            <ImageView currentImage={currentImage} />
             {currentImage && (
                 <>
                     <Button
