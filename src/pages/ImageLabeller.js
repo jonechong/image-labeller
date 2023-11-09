@@ -52,6 +52,10 @@ export default function ImageLabeller() {
         }
     };
 
+    const extractFilename = (path) => {
+        return path.split("/").pop().split("\\").pop(); // Handles both UNIX and Windows paths
+    };
+
     const handleImageLoad = async () => {
         if (!folderPath) {
             setInvalidDirectory(true);
@@ -136,7 +140,7 @@ export default function ImageLabeller() {
         {
             open: noImages,
             setOpen: setNoImages,
-            message: "There is no image in this directory.",
+            message: "There are no images in this directory.",
             title: "No Images Found",
         },
     ];
@@ -158,6 +162,9 @@ export default function ImageLabeller() {
                 <Box textAlign="center" my={2}>
                     <Typography variant="h6">
                         Image {currentIndex + 1} of {images.length}
+                    </Typography>
+                    <Typography>
+                        Filename: {extractFilename(currentImage)}
                     </Typography>
                 </Box>
             )}
