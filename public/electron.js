@@ -10,6 +10,7 @@ function createWindow() {
         width: 800,
         height: 600,
         webPreferences: {
+            webSecurity: false,
             preload: path.join(__dirname, "preload.js"),
             nodeIntegration: true,
         },
@@ -40,3 +41,4 @@ app.on("activate", function () {
 });
 
 ipcMain.handle("open-directory-dialog", ipcHandlers.openDirectoryDialog);
+ipcMain.handle("read-image-files", ipcHandlers.readImageFiles);

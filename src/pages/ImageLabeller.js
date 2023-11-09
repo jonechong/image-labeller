@@ -4,6 +4,7 @@ import { TextField, Button, Box, Card, CardMedia } from "@mui/material";
 export default function ImageLabeller() {
     const [folderPath, setFolderPath] = useState("");
     const [currentImage, setCurrentImage] = useState(null); // Placeholder for the current image path
+    const [images, setImages] = useState([]); // State to store image paths
 
     const handleOpenDialog = async () => {
         // Use the exposed function from the preload script
@@ -25,10 +26,16 @@ export default function ImageLabeller() {
         // Logic to delete the image and fetch the next one goes here
     };
 
-    const handleImageLoad = () => {
-        // Placeholder function to load the first image from the directory
-        console.log("Load images from", folderPath);
-        // Logic to load images goes here
+    const handleImageLoad = async () => {
+        if (!folderPath) return;
+        try {
+            const imageFiles = await window.api.readImageFiles(folderPath);
+            console.log(imageFiles);
+            setImages(imageFiles); // Update state with image paths
+            setCurrentImage(imageFiles[0]); // Set the first image as current
+        } catch (error) {
+            console.error("Error reading images: ", error);
+        }
     };
 
     return (
@@ -52,12 +59,12 @@ export default function ImageLabeller() {
             <Button variant="contained" onClick={handleOpenDialog}>
                 Browse Folders
             </Button>
-            {currentImage && (
-                <Card>
+            {images.map((image) => (
+                <Card key={image}>
                     <CardMedia
                         component="img"
-                        image={currentImage}
-                        alt="Current Image"
+                        image={image}
+                        alt="Loaded Image"
                         sx={{
                             maxHeight: 500,
                             maxWidth: "100%",
@@ -65,7 +72,7 @@ export default function ImageLabeller() {
                         }}
                     />
                 </Card>
-            )}
+            ))}
             <Button
                 variant="contained"
                 color="secondary"
