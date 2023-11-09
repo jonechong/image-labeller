@@ -14,7 +14,7 @@ export default function ImageLabeller() {
     const [imagesDeleted, setImagesDeleted] = useState(false);
     const [invalidDirectory, setInvalidDirectory] = useState(false);
 
-    const handleOpenDialog = async () => {
+    const openDirectoryDialog = async () => {
         const folderPath = await window.api.openDirectoryDialog();
         if (folderPath) {
             setFolderPath(folderPath);
@@ -109,7 +109,7 @@ export default function ImageLabeller() {
     const directoryButtons = [
         {
             label: "Select Directory",
-            action: handleOpenDialog,
+            action: openDirectoryDialog,
             variant: "contained",
         },
         { label: "Load Images", action: handleImageLoad, variant: "contained" },
