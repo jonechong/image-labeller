@@ -17,7 +17,6 @@ export default function ImageLabeller() {
         const folderPath = await window.api.openDirectoryDialog();
         if (folderPath) {
             setFolderPath(folderPath);
-            handleImageLoad(folderPath);
         }
     };
 
@@ -90,6 +89,21 @@ export default function ImageLabeller() {
             setNoMoreImages(true);
         }
     };
+
+    const buttonsConfig = [
+        {
+            label: "Delete Image",
+            action: handleDeleteImage,
+            variant: "contained",
+            color: "secondary",
+        },
+        {
+            label: "Previous Image",
+            action: showPrevImage,
+            variant: "contained",
+        },
+        { label: "Next Image", action: showNextImage, variant: "contained" },
+    ];
 
     return (
         <Box sx={{ padding: 2 }}>
