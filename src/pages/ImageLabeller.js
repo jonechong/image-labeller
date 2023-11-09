@@ -126,11 +126,11 @@ export default function ImageLabeller() {
                 variant="outlined"
             />
             {/* The following shows directory action buttons */}
-            <ActionButtons buttonsConfig={directoryButtons} />
+            <ActionButtons buttonsProps={directoryButtons} />
             <ImageView currentImage={currentImage} />
             {/* The following shows image action buttons if there is a current image */}
             {currentImage && (
-                <ActionButtons buttonsConfig={imageActionButtons} />
+                <ActionButtons buttonsProps={imageActionButtons} />
             )}
             {/* This snackbar shows if there is no more images when user click previous/next */}
             <SnackbarInfoAlert

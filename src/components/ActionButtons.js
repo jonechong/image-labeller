@@ -1,9 +1,9 @@
 import { Button } from "@mui/material";
 
-export default function ActionButtons({ buttonsConfig }) {
+export default function ActionButtons({ buttonsProps }) {
     return (
         <>
-            {buttonsConfig.map((button, index) => (
+            {buttonsProps.map((button, index) => (
                 <Button
                     key={index}
                     variant={button.variant}
