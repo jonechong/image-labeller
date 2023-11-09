@@ -1,17 +1,25 @@
 import React, { useState } from "react";
-import { TextField, Button, Box, Card, CardMedia } from "@mui/material";
+import {
+    TextField,
+    Button,
+    Box,
+    Card,
+    CardMedia,
+    Snackbar,
+} from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 
 export default function ImageLabeller() {
     const [folderPath, setFolderPath] = useState("");
-    const [currentImage, setCurrentImage] = useState(null); // Placeholder for the current image path
-    const [images, setImages] = useState([]); // State to store image paths
+    const [currentImage, setCurrentImage] = useState(null);
+    const [images, setImages] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [alertOpen, setAlertOpen] = useState(false); // State for Snackbar alert
 
     const handleOpenDialog = async () => {
-        // Use the exposed function from the preload script
         const folderPath = await window.api.openDirectoryDialog();
         if (folderPath) {
             setFolderPath(folderPath);
-            // Load images from the selected directory
             handleImageLoad(folderPath);
         }
     };
@@ -20,21 +28,65 @@ export default function ImageLabeller() {
         setFolderPath(event.target.value);
     };
 
-    const handleDeleteImage = () => {
-        // Placeholder function to delete the current image
-        console.log("Delete image at", currentImage);
-        // Logic to delete the image and fetch the next one goes here
+    const handleDeleteImage = async () => {
+        if (!currentImage) return;
+        try {
+            const response = await window.api.deleteImageFile(currentImage);
+            if (response.success) {
+                const newImages = images.filter((img) => img !== currentImage);
+                setImages(newImages);
+                if (newImages.length === 0) {
+                    setCurrentImage(null);
+                } else if (currentIndex >= newImages.length) {
+                    setCurrentIndex(newImages.length - 1);
+                    setCurrentImage(newImages[newImages.length - 1]);
+                } else {
+                    setCurrentImage(newImages[currentIndex]);
+                }
+            } else {
+                console.error("Error deleting the image:", response.error);
+                // Handle error (e.g., show an alert to the user)
+            }
+        } catch (error) {
+            console.error("Error sending delete image IPC message:", error);
+            // Handle error (e.g., show an alert to the user)
+        }
     };
 
     const handleImageLoad = async () => {
         if (!folderPath) return;
         try {
             const imageFiles = await window.api.readImageFiles(folderPath);
-            console.log(imageFiles);
-            setImages(imageFiles); // Update state with image paths
-            setCurrentImage(imageFiles[0]); // Set the first image as current
+            setImages(imageFiles);
+            setCurrentImage(imageFiles[0]);
+            setCurrentIndex(0);
         } catch (error) {
             console.error("Error reading images: ", error);
+        }
+    };
+
+    const handleAlertClose = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        setAlertOpen(false);
+    };
+
+    const showNextImage = () => {
+        if (currentIndex < images.length - 1) {
+            setCurrentIndex(currentIndex + 1);
+            setCurrentImage(images[currentIndex + 1]);
+        } else {
+            setAlertOpen(true);
+        }
+    };
+
+    const showPrevImage = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(currentIndex - 1);
+            setCurrentImage(images[currentIndex - 1]);
+        } else {
+            setAlertOpen(true);
         }
     };
 
@@ -47,7 +99,10 @@ export default function ImageLabeller() {
                 onChange={handleDirectoryChange}
                 margin="normal"
                 variant="outlined"
-            />
+            />{" "}
+            <Button variant="contained" onClick={handleOpenDialog}>
+                Select Directory
+            </Button>
             <Button
                 variant="contained"
                 color="primary"
@@ -56,14 +111,11 @@ export default function ImageLabeller() {
             >
                 Load Images
             </Button>
-            <Button variant="contained" onClick={handleOpenDialog}>
-                Browse Folders
-            </Button>
-            {images.map((image) => (
-                <Card key={image}>
+            {currentImage && (
+                <Card>
                     <CardMedia
                         component="img"
-                        image={image}
+                        image={currentImage}
                         alt="Loaded Image"
                         sx={{
                             maxHeight: 500,
@@ -72,15 +124,46 @@ export default function ImageLabeller() {
                         }}
                     />
                 </Card>
-            ))}
-            <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleDeleteImage}
-                sx={{ margin: 1 }}
+            )}
+            {currentImage && (
+                <>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={handleDeleteImage}
+                        sx={{ margin: 1 }}
+                    >
+                        Delete Image
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={showPrevImage}
+                        sx={{ margin: 1 }}
+                    >
+                        Previous Image
+                    </Button>
+                    <Button
+                        variant="contained"
+                        onClick={showNextImage}
+                        sx={{ margin: 1 }}
+                    >
+                        Next Image
+                    </Button>
+                </>
+            )}
+            <Snackbar
+                open={alertOpen}
+                autoHideDuration={3000}
+                onClose={handleAlertClose}
             >
-                Delete Image
-            </Button>
+                <MuiAlert
+                    onClose={handleAlertClose}
+                    severity="info"
+                    sx={{ width: "100%" }}
+                >
+                    No more images.
+                </MuiAlert>
+            </Snackbar>
         </Box>
     );
 }
