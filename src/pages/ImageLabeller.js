@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, Box } from "@mui/material";
+import { TextField, Box, Typography } from "@mui/material";
 import AlertDialog from "../components/AlertDialog";
 import SnackbarInfoAlert from "../components/SnackbarInfoAlert";
 import ImageView from "../components/ImageView";
@@ -153,6 +153,14 @@ export default function ImageLabeller() {
             />
             {/* The following shows directory action buttons */}
             <ActionButtons buttonsProps={directoryButtons} />
+            {/* Display Image Index */}
+            {images.length > 0 && (
+                <Box textAlign="center" my={2}>
+                    <Typography variant="h6">
+                        Image {currentIndex + 1} of {images.length}
+                    </Typography>
+                </Box>
+            )}
             {/* The following shows the image if there is a current image */}
             <ImageView currentImage={currentImage} />
             {/* The following shows image action buttons if there is a current image */}
