@@ -9,8 +9,9 @@ export default function ImageLabeller() {
     const [currentImage, setCurrentImage] = useState(null);
     const [images, setImages] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [noMoreImages, setNoMoreImages] = useState(false); // State for Snackbar alert
+    const [noMoreImages, setNoMoreImages] = useState(false);
     const [imagesDeleted, setImagesDeleted] = useState(false);
+    const [invalidDirectory, setInvalidDirectory] = useState(false);
 
     const handleOpenDialog = async () => {
         const folderPath = await window.api.openDirectoryDialog();
@@ -51,7 +52,10 @@ export default function ImageLabeller() {
     };
 
     const handleImageLoad = async () => {
-        if (!folderPath) return;
+        if (!folderPath) {
+            setInvalidDirectory(true);
+            return;
+        }
         try {
             const imageFiles = await window.api.readImageFiles(folderPath);
             setImages(imageFiles);
@@ -148,6 +152,12 @@ export default function ImageLabeller() {
                 setDialogOpen={setImagesDeleted}
                 dialogMessage={"All images have been deleted!"}
                 dialogTitle={"Alert"}
+            />
+            <AlertDialog
+                dialogOpen={invalidDirectory}
+                setDialogOpen={setInvalidDirectory}
+                dialogMessage={"Please select a valid directory first."}
+                dialogTitle={"Invalid Directory"}
             />
         </Box>
     );
