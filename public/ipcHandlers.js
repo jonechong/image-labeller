@@ -12,7 +12,7 @@ const readImageFiles = async (event, folderPath) => {
         })
         .map((file) => {
             // Convert to file:// URL
-            const filePath = path.join(folderPath, file);   
+            const filePath = path.join(folderPath, file);
             return `file://${filePath.replace(/\\/g, "/")}`;
         });
     return imageFiles;
@@ -26,8 +26,24 @@ const openDirectoryDialog = async (event) => {
     return filePaths[0]; // returns the selected directory path
 };
 
+const deleteImageFile = async (event, filePath) => {
+    try {
+        // Decode the URI and remove 'file://' if present
+        const decodedPath = decodeURI(filePath.replace("file://", ""));
+
+        // Use trash to move the file to the bin
+        const trash = await import("trash");
+        await trash.default(decodedPath);
+        return { success: true };
+    } catch (error) {
+        console.error(`Error moving file to trash: ${error}`);
+        return { success: false, error: error.message };
+    }
+};
+
 // Export other handlers similarly
 module.exports = {
     openDirectoryDialog,
     readImageFiles,
+    deleteImageFile,
 };
