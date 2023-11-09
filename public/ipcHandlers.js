@@ -6,7 +6,7 @@ const readImageFiles = async (event, folderPath) => {
     const files = fs.readdirSync(folderPath);
     const imageFiles = files
         .filter((file) => {
-            return [".jpg", ".jpeg", ".png", ".gif", ".bmp"].includes(
+            return [".jpg", ".jpeg", ".png", ".bmp"].includes(
                 path.extname(file).toLowerCase()
             );
         })
