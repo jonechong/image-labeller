@@ -1,7 +1,7 @@
 import React from "react";
-import { Button, Typography, Box } from "@mui/material";
+import { Button } from "@mui/material";
 
-export default function DirectoryOpener({ onDirectorySelect }) {
+export default function DirectoryBrowser({ onDirectorySelect }) {
     const handleOpenDialog = async () => {
         const selectedDirectory = await window.api.openDirectoryDialog();
         if (selectedDirectory) {
@@ -10,7 +10,7 @@ export default function DirectoryOpener({ onDirectorySelect }) {
     };
 
     return (
-        <Button variant="outlined" onClick={handleOpenDialog}>
+        <Button variant="contained" onClick={handleOpenDialog}>
             Select Directory
         </Button>
     );
