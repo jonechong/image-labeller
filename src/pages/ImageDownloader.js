@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, TextField, Button, List, ListItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../components/AlertDialog";
@@ -107,10 +107,6 @@ export default function ImageDownloader() {
             });
     };
 
-    const handleCancel = () => {
-        navigate("/");
-    };
-
     return (
         <Box sx={{ margin: "auto", p: 2 }}>
             <DirectoryBrowser
@@ -141,7 +137,9 @@ export default function ImageDownloader() {
                 <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={handleCancel}
+                    onClick={() => {
+                        navigate("/");
+                    }}
                     sx={{ ml: 2 }}
                 >
                     Cancel
