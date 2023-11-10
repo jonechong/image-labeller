@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import AlertDialog from "../components/AlertDialog";
 import DirectoryBrowser from "../components/DirectoryBrowser";
 import ActionButtons from "../components/ActionButtons";
-import LoadingBar from "../components/LoadingBar";
+import LoadingBar from "../components/LoadingBarPopup";
 
 export default function ImageDownloader() {
     const navigate = useNavigate();
