@@ -223,6 +223,9 @@ export default function ImageDownloader() {
                 setDownloadStatuses((prevStatuses) => {
                     const newStatuses = [...prevStatuses];
                     newStatuses[data.imageIndex] = data.message;
+                    if (data.progress === 1) {
+                        newStatuses.push("Download Completed!");
+                    }
                     return newStatuses;
                 });
             }

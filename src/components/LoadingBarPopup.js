@@ -85,30 +85,26 @@ export default function LoadingBar({
                     <Typography variant="body2" gutterBottom>
                         {message}
                     </Typography>
-                    <Box
-                        ref={logsContainerRef}
-                        sx={{
-                            maxHeight: "200px",
-                            overflowY: "auto",
-                            borderRadius: 2,
-                            boxShadow: 1,
-                            border: "1px solid",
-                            padding: 1,
-                        }}
-                    >
-                        {logs ? (
-                            logs.map((status, index) => (
+                    {logs && (
+                        <Box
+                            ref={logsContainerRef}
+                            sx={{
+                                maxHeight: "200px",
+                                overflowY: "auto",
+                                borderRadius: 2,
+                                boxShadow: 1,
+                                border: "1px solid",
+                                padding: 1,
+                            }}
+                        >
+                            {logs.map((status, index) => (
                                 <Typography key={index} variant="body2">
                                     {status}
                                 </Typography>
-                            ))
-                        ) : (
-                            <Typography variant="body2">
-                                No logs available
-                            </Typography>
-                        )}
-                    </Box>
-                    {progress === 100 && (
+                            ))}
+                        </Box>
+                    )}
+                    {progress === 100 && acknowledgement != undefined && (
                         <Box mt={2} textAlign="center">
                             <Button variant="contained" onClick={handleClose}>
                                 OK
