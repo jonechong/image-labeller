@@ -1,17 +1,10 @@
 import React, { useState } from "react";
-import {
-    TextField,
-    Box,
-    Typography,
-    InputAdornment,
-    IconButton,
-    Button,
-} from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import AlertDialog from "../components/AlertDialog";
 import SnackbarInfoAlert from "../components/SnackbarInfoAlert";
 import ImageView from "../components/ImageView";
 import ActionButtons from "../components/ActionButtons";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import DirectoryBrowser from "../components/DirectoryBrowser";
 
 export default function ImageLabeller() {
     const [folderPath, setFolderPath] = useState("");
@@ -121,15 +114,6 @@ export default function ImageLabeller() {
         { label: "Next Image", action: showNextImage, variant: "contained" },
     ];
 
-    const directoryButtons = [
-        {
-            label: "Select Directory",
-            action: openDirectoryDialog,
-            variant: "contained",
-        },
-        { label: "Load Images", action: handleImageLoad, variant: "contained" },
-    ];
-
     const alertDialogConfigs = [
         {
             open: imagesDeleted,
@@ -153,30 +137,10 @@ export default function ImageLabeller() {
 
     return (
         <Box sx={{ padding: 2 }}>
-            <TextField
-                fullWidth
-                label={
-                    <>
-                        Folder Directory
-                        <span style={{ color: "red" }}>*</span>
-                    </>
-                }
-                value={folderPath}
-                onChange={handleDirectoryChange}
-                margin="normal"
-                variant="outlined"
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="open directory"
-                                onClick={openDirectoryDialog}
-                            >
-                                <FolderOpenIcon />
-                            </IconButton>
-                        </InputAdornment>
-                    ),
-                }}
+            <DirectoryBrowser
+                folderPath={folderPath}
+                handleDirectoryChange={handleDirectoryChange}
+                openDirectoryDialog={openDirectoryDialog}
             />
             <Button variant="contained" onClick={handleImageLoad}>
                 Load Images
