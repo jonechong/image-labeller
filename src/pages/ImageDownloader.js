@@ -7,6 +7,7 @@ import DirectoryBrowser from "../components/DirectoryBrowser";
 export default function ImageDownloader() {
     const navigate = useNavigate();
     const [inputs, setInputs] = useState({
+        newFolderName: "",
         apiKey: "",
         query: "",
         start: 0,
@@ -18,9 +19,46 @@ export default function ImageDownloader() {
     });
 
     const fieldsConfig = [
-        { label: "API Key", name: "apiKey", type: "text" },
-        { label: "Query", name: "query", type: "text" },
-        { label: "Start (leave 0 if unknown)", name: "start", type: "number" },
+        {
+            label: (
+                <>
+                    New folder name (name of your food)
+                    <span style={{ color: "red" }}>*</span>
+                </>
+            ),
+            name: "newFolderName",
+            type: "text",
+        },
+        {
+            label: (
+                <>
+                    API Key
+                    <span style={{ color: "red" }}>*</span>
+                </>
+            ),
+            name: "apiKey",
+            type: "text",
+        },
+        {
+            label: (
+                <>
+                    Query
+                    <span style={{ color: "red" }}>*</span>
+                </>
+            ),
+            name: "query",
+            type: "text",
+        },
+        {
+            label: (
+                <>
+                    Start Index (leave 0 if unknown)
+                    <span style={{ color: "red" }}>*</span>
+                </>
+            ),
+            name: "start",
+            type: "number",
+        },
         {
             label: 'Geolocation for search engine (default "SG")',
             name: "gl",
@@ -64,7 +102,8 @@ export default function ImageDownloader() {
             !inputs.query ||
             inputs.start === "" ||
             inputs.totalNum === "" ||
-            folderPath === ""
+            folderPath === "" ||
+            inputs.newFolderName === ""
         ) {
             setShowAlert(true);
             return false;
@@ -106,6 +145,26 @@ export default function ImageDownloader() {
                 console.log(error);
             });
     };
+
+    useEffect(() => {
+        if (arrayData.length > 0) {
+            const downloadDirectory =
+                folderPath + "/" + inputs.newFolderName.replace(/ /g, "_");
+            window.api
+                .downloadImages(
+                    arrayData,
+                    downloadDirectory,
+                    inputs.start,
+                    inputs.userAgent !== "" ? inputs.userAgent : undefined
+                )
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+    }, [arrayData]);
 
     return (
         <Box sx={{ margin: "auto", p: 2 }}>
