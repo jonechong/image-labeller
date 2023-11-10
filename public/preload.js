@@ -26,4 +26,14 @@ contextBridge.exposeInMainWorld("api", {
             startNum,
             userAgent
         ),
+    receive: (channel, func) => {
+        ipcRenderer.on(channel, (event, ...args) => {
+            console.log("Received args:", args);
+            func(...args);
+        });
+    },
+
+    removeListener: (channel, func) => {
+        ipcRenderer.removeListener(channel, func);
+    },
 });
