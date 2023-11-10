@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Box, TextField } from "@mui/material";
+import {
+    Box,
+    TextField,
+    CircularProgress,
+    LinearProgress,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../components/AlertDialog";
 import DirectoryBrowser from "../components/DirectoryBrowser";
@@ -102,6 +107,8 @@ export default function ImageDownloader() {
     const [arrayData, setArrayData] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
     const [folderPath, setFolderPath] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
 
     const handleDirectoryChange = (event) => {
         setFolderPath(event.target.value);
@@ -138,23 +145,30 @@ export default function ImageDownloader() {
 
     const handleSubmit = () => {
         if (!validateInputs()) return;
-        window.api
-            .fetchImageUrls(
-                inputs.apiKey,
-                inputs.query,
-                inputs.start,
-                inputs.totalNum,
-                inputs.gl !== "" ? inputs.gl : undefined,
-                inputs.hl !== "" ? inputs.hl : undefined,
-                inputs.cx !== "" ? inputs.cx : undefined,
-                inputs.userAgent !== "" ? inputs.userAgent : undefined
-            )
-            .then((response) => {
-                setArrayData(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        // window.api
+        //     .fetchImageUrls(
+        //         inputs.apiKey,
+        //         inputs.query,
+        //         inputs.start,
+        //         inputs.totalNum,
+        //         inputs.gl !== "" ? inputs.gl : undefined,
+        //         inputs.hl !== "" ? inputs.hl : undefined,
+        //         inputs.cx !== "" ? inputs.cx : undefined,
+        //         inputs.userAgent !== "" ? inputs.userAgent : undefined
+        //     )
+        //     .then((response) => {
+        //         setArrayData(response);
+        //     })
+        //     .catch((error) => {
+        //         console.log(error);
+        //     });
+        setArrayData([
+            "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
+            "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
+            "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
+            "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
+            "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
+        ]);
     };
 
     const downloadButtons = [
@@ -176,6 +190,9 @@ export default function ImageDownloader() {
 
     useEffect(() => {
         if (arrayData.length > 0) {
+            setIsLoading(true);
+            setProgress(0);
+
             const downloadDirectory =
                 folderPath + "/" + inputs.newFolderName.replace(/ /g, "_");
             window.api
@@ -186,13 +203,34 @@ export default function ImageDownloader() {
                     inputs.userAgent !== "" ? inputs.userAgent : undefined
                 )
                 .then((response) => {
-                    console.log(response);
+                    setIsLoading(false);
                 })
                 .catch((error) => {
                     console.log(error);
+                    setIsLoading(false);
                 });
         }
     }, [arrayData]);
+
+    useEffect(() => {
+        const handleDownloadProgress = (data) => {
+            console.log("Download Progress Data:", data);
+            if (data && typeof data.progress === "number") {
+                setProgress(Math.round(data.progress * 100));
+            }
+        };
+
+        if (isLoading) {
+            window.api.receive("download-progress", handleDownloadProgress);
+        }
+
+        return () => {
+            window.api.removeListener(
+                "download-progress",
+                handleDownloadProgress
+            );
+        };
+    }, [isLoading]);
 
     return (
         <Box sx={{ margin: "auto", p: 2 }}>
@@ -223,6 +261,11 @@ export default function ImageDownloader() {
                 dialogMessage="Please fill in all required fields."
                 dialogTitle="Invalid Input"
             />
+            <Box sx={{ margin: "auto", p: 2 }}>
+                {isLoading && (
+                    <LinearProgress variant="determinate" value={progress} />
+                )}
+            </Box>
         </Box>
     );
 }
