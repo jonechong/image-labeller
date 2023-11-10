@@ -1,7 +1,17 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, List, ListItem } from "@mui/material";
+import {
+    Box,
+    TextField,
+    Button,
+    List,
+    ListItem,
+    InputAdornment,
+    IconButton,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../components/AlertDialog";
+import ActionButtons from "../components/ActionButtons";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 
 export default function ImageDownloader() {
     const navigate = useNavigate();
@@ -42,15 +52,36 @@ export default function ImageDownloader() {
         },
     ];
 
+    const openDirectoryDialog = async () => {
+        const folderPath = await window.api.openDirectoryDialog();
+        if (folderPath) {
+            setFolderPath(folderPath);
+        }
+    };
+
+    const directoryButtons = [
+        {
+            label: "Select Directory",
+            action: openDirectoryDialog,
+            variant: "contained",
+        },
+    ];
+
     const [arrayData, setArrayData] = useState([1, 4, 5]);
     const [showAlert, setShowAlert] = useState(false);
+    const [folderPath, setFolderPath] = useState("");
+
+    const handleDirectoryChange = (event) => {
+        setFolderPath(event.target.value);
+    };
 
     const validateInputs = () => {
         if (
             !inputs.apiKey ||
             !inputs.query ||
             inputs.start === "" ||
-            inputs.totalNum === ""
+            inputs.totalNum === "" ||
+            folderPath === ""
         ) {
             setShowAlert(true);
             return false;
@@ -81,6 +112,31 @@ export default function ImageDownloader() {
 
     return (
         <Box sx={{ margin: "auto", p: 2 }}>
+            <TextField
+                fullWidth
+                label={
+                    <>
+                        Folder Directory
+                        <span style={{ color: "red" }}>*</span>
+                    </>
+                }
+                value={folderPath}
+                onChange={handleDirectoryChange}
+                margin="normal"
+                variant="outlined"
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="open directory"
+                                onClick={openDirectoryDialog}
+                            >
+                                <FolderOpenIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }}
+            />
             {fieldsConfig.map(({ label, name, type }, index) => (
                 <TextField
                     key={index}
