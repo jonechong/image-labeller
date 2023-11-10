@@ -44,11 +44,9 @@ export default function ImageLabeller() {
                 }
             } else {
                 console.error("Error deleting the image:", response.error);
-                // Handle error (e.g., show an alert to the user)
             }
         } catch (error) {
             console.error("Error sending delete image IPC message:", error);
-            // Handle error (e.g., show an alert to the user)
         }
     };
 
