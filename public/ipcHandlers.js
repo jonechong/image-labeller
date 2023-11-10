@@ -142,12 +142,17 @@ const downloadImages = async (
 
             event.sender.send("download-progress", {
                 progress: (i + 1) / imageUrls.length,
+                imageIndex: i,
+                message: `Downloaded image ${i + startNum + 1}`,
             });
         } catch (error) {
-            console.error(
-                `Error downloading image ${i + startNum + 1}:`,
-                error.message
-            );
+            event.sender.send("download-progress", {
+                progress: (i + 1) / imageUrls.length,
+                imageIndex: i,
+                message: `Error downloading image ${i + startNum + 1}: ${
+                    error.message
+                }`,
+            });
         }
     }
 };

@@ -111,6 +111,9 @@ export default function ImageDownloader() {
     const [isDownloading, setIsDownloading] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
     const [downloadProgress, setDownloadProgress] = useState(0);
+    const [downloadStatuses, setDownloadStatuses] = useState([]);
+    const [downloadAcknowledged, setDownloadAcknowledged] = useState(false);
+
     const [fetchProgress, setFetchProgress] = useState(0);
 
     const handleDirectoryChange = (event) => {
@@ -149,33 +152,25 @@ export default function ImageDownloader() {
     const handleSubmit = () => {
         if (!validateInputs()) return;
         setIsFetching(true);
-        // window.api
-        //     .fetchImageUrls(
-        //         inputs.apiKey,
-        //         inputs.query,
-        //         inputs.start,
-        //         inputs.totalNum,
-        //         inputs.gl !== "" ? inputs.gl : undefined,
-        //         inputs.hl !== "" ? inputs.hl : undefined,
-        //         inputs.cx !== "" ? inputs.cx : undefined,
-        //         inputs.userAgent !== "" ? inputs.userAgent : undefined
-        //     )
-        //     .then((response) => {
-        //         setArrayData(response);
-        // setIsFetching(false)
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        // setIsFetching(false)
-        //     });
-        setArrayData([
-            "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
-            "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
-            "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
-            "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
-            "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
-        ]);
-        setIsFetching(false);
+        window.api
+            .fetchImageUrls(
+                inputs.apiKey,
+                inputs.query,
+                inputs.start,
+                inputs.totalNum,
+                inputs.gl !== "" ? inputs.gl : undefined,
+                inputs.hl !== "" ? inputs.hl : undefined,
+                inputs.cx !== "" ? inputs.cx : undefined,
+                inputs.userAgent !== "" ? inputs.userAgent : undefined
+            )
+            .then((response) => {
+                setArrayData(response);
+                setIsFetching(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setIsFetching(false);
+            });
     };
 
     const downloadButtons = [
@@ -198,7 +193,9 @@ export default function ImageDownloader() {
     useEffect(() => {
         if (arrayData.length > 0) {
             setIsDownloading(true);
+            setDownloadAcknowledged(true);
             setDownloadProgress(0);
+            setDownloadStatuses([]);
 
             const downloadDirectory =
                 folderPath + "/" + inputs.newFolderName.replace(/ /g, "_");
@@ -223,6 +220,11 @@ export default function ImageDownloader() {
         const handleDownloadProgress = (data) => {
             if (data && typeof data.progress === "number") {
                 setDownloadProgress(Math.round(data.progress * 100));
+                setDownloadStatuses((prevStatuses) => {
+                    const newStatuses = [...prevStatuses];
+                    newStatuses[data.imageIndex] = data.message;
+                    return newStatuses;
+                });
             }
         };
 
@@ -292,8 +294,11 @@ export default function ImageDownloader() {
             <LoadingBar
                 isLoading={isDownloading}
                 progress={downloadProgress}
-                title="Download Images"
+                title="Downloading Images"
                 message="Please wait while the images are being downloaded..."
+                logs={downloadStatuses}
+                acknowledgement={downloadAcknowledged}
+                setAcknowledgement={setDownloadAcknowledged}
             />
         </Box>
     );
