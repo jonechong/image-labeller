@@ -43,3 +43,4 @@ app.on("activate", function () {
 ipcMain.handle("open-directory-dialog", ipcHandlers.openDirectoryDialog);
 ipcMain.handle("read-image-files", ipcHandlers.readImageFiles);
 ipcMain.handle("delete-image-file", ipcHandlers.deleteImageFile);
+ipcMain.handle("fetch-image-urls", ipcHandlers.fetchImageUrls);

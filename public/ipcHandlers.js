@@ -1,4 +1,5 @@
 const { dialog } = require("electron");
+const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 
@@ -41,9 +42,65 @@ const deleteImageFile = async (event, filePath) => {
     }
 };
 
-// Export other handlers similarly
+const fetchImageUrls = async (
+    event,
+    apiKey,
+    cx,
+    query,
+    start,
+    totalNum,
+    gl,
+    hl,
+    userAgent = ""
+) => {
+    if (userAgent == "") {
+        userAgent =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
+    }
+    const searchResults = [];
+
+    while (searchResults.length < totalNum) {
+        try {
+            const response = await axios.get(
+                "https://www.googleapis.com/customsearch/v1",
+                {
+                    params: {
+                        key: apiKey,
+                        cx: cx,
+                        q: query,
+                        searchType: "image",
+                        num: 10,
+                        start: start,
+                        gl: gl,
+                        hl: hl,
+                    },
+                    headers: {
+                        "User-Agent": userAgent,
+                    },
+                }
+            );
+
+            const items = response.data.items || [];
+            searchResults.push(...items);
+            start += items.length;
+
+            if (!response.data.queries.nextPage) break;
+        } catch (error) {
+            console.error(`An error occurred: ${error.message}`);
+            // Handle retries, sleep, etc.
+        }
+    }
+
+    const returnResult = searchResults
+        .slice(0, totalNumImages)
+        .map((item) => item.link);
+    console.log(returnResult);
+    return returnResult;
+};
+
 module.exports = {
     openDirectoryDialog,
     readImageFiles,
     deleteImageFile,
+    fetchImageUrls,
 };
