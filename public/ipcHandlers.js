@@ -62,6 +62,7 @@ const fetchImageUrls = async (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
     const searchResults = [];
     let retries = 3; // Maximum number of retries
+    let fetchedCount = 0; // Number of fetched URLs
 
     while (searchResults.length < totalNum && retries > 0) {
         try {
@@ -87,7 +88,10 @@ const fetchImageUrls = async (
             const items = response.data.items || [];
             searchResults.push(...items);
             start += items.length;
-
+            fetchedCount += items.length;
+            event.sender.send("fetch-progress", {
+                progress: fetchedCount / totalNum,
+            });
             if (!response.data.queries.nextPage) break;
         } catch (error) {
             console.error(`An error occurred: ${error.message}`);
