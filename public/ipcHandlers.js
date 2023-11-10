@@ -136,6 +136,8 @@ const downloadImages = async (
 
             await image.toFile(path.join(folderPath, filename));
             console.log(`Downloaded image ${i + startNum + 1}`);
+
+            event.sender.send("download-progress", { progress: (i + 1) / imageUrls.length });
         } catch (error) {
             console.error(
                 `Error downloading image ${i + startNum + 1}:`,
