@@ -1,6 +1,7 @@
 import "./App.css";
-import ImageLabeller from "./pages/ImageLabeller";
 import SplashScreen from "./pages/SplashScreen";
+import ImageLabeller from "./pages/ImageLabeller";
+import ImageDownloader from "./pages/ImageDownloader";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
