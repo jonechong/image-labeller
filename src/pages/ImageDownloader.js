@@ -61,6 +61,16 @@ export default function ImageDownloader() {
             type: "number",
         },
         {
+            label: (
+                <>
+                    Total number of images
+                    <span style={{ color: "red" }}>*</span>
+                </>
+            ),
+            name: "totalNum",
+            type: "number",
+        },
+        {
             label: 'Geolocation for search engine (default "SG")',
             name: "gl",
             type: "text",
