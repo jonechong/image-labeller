@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import AlertDialog from "../components/AlertDialog";
 import DirectoryBrowser from "../components/DirectoryBrowser";
 import ActionButtons from "../components/ActionButtons";
+import LoadingBar from "../components/LoadingBar";
 
 export default function ImageDownloader() {
     const navigate = useNavigate();
@@ -107,7 +108,8 @@ export default function ImageDownloader() {
     const [arrayData, setArrayData] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
     const [folderPath, setFolderPath] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
     const [progress, setProgress] = useState(0);
 
     const handleDirectoryChange = (event) => {
@@ -145,6 +147,7 @@ export default function ImageDownloader() {
 
     const handleSubmit = () => {
         if (!validateInputs()) return;
+        setIsFetching(true);
         // window.api
         //     .fetchImageUrls(
         //         inputs.apiKey,
@@ -158,9 +161,11 @@ export default function ImageDownloader() {
         //     )
         //     .then((response) => {
         //         setArrayData(response);
+        // setIsFetching(false)
         //     })
         //     .catch((error) => {
         //         console.log(error);
+        // setIsFetching(false)
         //     });
         setArrayData([
             "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
@@ -169,6 +174,7 @@ export default function ImageDownloader() {
             "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
             "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
         ]);
+        setIsFetching(false)
     };
 
     const downloadButtons = [
@@ -190,7 +196,7 @@ export default function ImageDownloader() {
 
     useEffect(() => {
         if (arrayData.length > 0) {
-            setIsLoading(true);
+            setIsDownloading(true);
             setProgress(0);
 
             const downloadDirectory =
@@ -203,24 +209,23 @@ export default function ImageDownloader() {
                     inputs.userAgent !== "" ? inputs.userAgent : undefined
                 )
                 .then((response) => {
-                    setIsLoading(false);
+                    setIsDownloading(false);
                 })
                 .catch((error) => {
                     console.log(error);
-                    setIsLoading(false);
+                    setIsDownloading(false);
                 });
         }
     }, [arrayData]);
 
     useEffect(() => {
         const handleDownloadProgress = (data) => {
-            console.log("Download Progress Data:", data);
             if (data && typeof data.progress === "number") {
                 setProgress(Math.round(data.progress * 100));
             }
         };
 
-        if (isLoading) {
+        if (isDownloading) {
             window.api.receive("download-progress", handleDownloadProgress);
         }
 
@@ -230,7 +235,7 @@ export default function ImageDownloader() {
                 handleDownloadProgress
             );
         };
-    }, [isLoading]);
+    }, [isDownloading]);
 
     return (
         <Box sx={{ margin: "auto", p: 2 }}>
@@ -261,11 +266,13 @@ export default function ImageDownloader() {
                 dialogMessage="Please fill in all required fields."
                 dialogTitle="Invalid Input"
             />
-            <Box sx={{ margin: "auto", p: 2 }}>
-                {isLoading && (
-                    <LinearProgress variant="determinate" value={progress} />
-                )}
-            </Box>
+            <LoadingBar isLoading={isFetching} title="Fetching Images" message="Please wait while the images are being fetched..." />
+            <LoadingBar
+                isLoading={isDownloading}
+                progress={progress}
+                title="Download Images"
+                message="Please wait while the images are being downloaded..."
+            />
         </Box>
     );
 }
