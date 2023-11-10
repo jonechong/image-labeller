@@ -1,4 +1,4 @@
-import { Card, CardMedia, Typography } from "@mui/material";
+import { Card, CardMedia } from "@mui/material";
 
 export default function ImageView({ currentImage }) {
     return (
