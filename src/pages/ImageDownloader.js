@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Box, TextField, Button, List, ListItem } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../components/AlertDialog";
 import DirectoryBrowser from "../components/DirectoryBrowser";
+import ActionButtons from "../components/ActionButtons";
 
 export default function ImageDownloader() {
     const navigate = useNavigate();
@@ -146,6 +147,23 @@ export default function ImageDownloader() {
             });
     };
 
+    const downloadButtons = [
+        {
+            label: "Submit",
+            action: handleSubmit,
+            variant: "contained",
+            color: "primary",
+        },
+        {
+            label: "Cancel",
+            action: () => {
+                navigate("/");
+            },
+            variant: "contained",
+            color: "secondary",
+        },
+    ];
+
     useEffect(() => {
         if (arrayData.length > 0) {
             const downloadDirectory =
@@ -186,31 +204,9 @@ export default function ImageDownloader() {
                 />
             ))}
             <Box textAlign="center" mt={2}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSubmit}
-                >
-                    Submit
-                </Button>
-                <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={() => {
-                        navigate("/");
-                    }}
-                    sx={{ ml: 2 }}
-                >
-                    Cancel
-                </Button>
+                <ActionButtons buttonsProps={downloadButtons} />
             </Box>
-            <Box mt={2}>
-                <List>
-                    {arrayData.map((item, index) => (
-                        <ListItem key={index}>{item}</ListItem>
-                    ))}
-                </List>
-            </Box>
+
             <AlertDialog
                 dialogOpen={showAlert}
                 setDialogOpen={setShowAlert}
