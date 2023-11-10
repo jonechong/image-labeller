@@ -61,7 +61,6 @@ const fetchImageUrls = async (
         userAgent ||
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
     const searchResults = [];
-    let currentStart = start;
     let retries = 3; // Maximum number of retries
 
     while (searchResults.length < totalNum && retries > 0) {
@@ -137,7 +136,9 @@ const downloadImages = async (
             await image.toFile(path.join(folderPath, filename));
             console.log(`Downloaded image ${i + startNum + 1}`);
 
-            event.sender.send("download-progress", { progress: (i + 1) / imageUrls.length });
+            event.sender.send("download-progress", {
+                progress: (i + 1) / imageUrls.length,
+            });
         } catch (error) {
             console.error(
                 `Error downloading image ${i + startNum + 1}:`,
