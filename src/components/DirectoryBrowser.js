@@ -1,17 +1,37 @@
 import React from "react";
-import { Button } from "@mui/material";
+import { TextField, IconButton, InputAdornment } from "@mui/material";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 
-export default function DirectoryBrowser({ onDirectorySelect }) {
-    const handleOpenDialog = async () => {
-        const selectedDirectory = await window.api.openDirectoryDialog();
-        if (selectedDirectory) {
-            onDirectorySelect(selectedDirectory);
-        }
-    };
-
+export default function DirectoryBrowser({
+    folderPath,
+    handleDirectoryChange,
+    openDirectoryDialog,
+}) {
     return (
-        <Button variant="contained" onClick={handleOpenDialog}>
-            Select Directory
-        </Button>
+        <TextField
+            fullWidth
+            label={
+                <>
+                    Folder Directory
+                    <span style={{ color: "red" }}>*</span>
+                </>
+            }
+            value={folderPath}
+            onChange={handleDirectoryChange}
+            margin="normal"
+            variant="outlined"
+            InputProps={{
+                endAdornment: (
+                    <InputAdornment position="end">
+                        <IconButton
+                            aria-label="open directory"
+                            onClick={openDirectoryDialog}
+                        >
+                            <FolderOpenIcon />
+                        </IconButton>
+                    </InputAdornment>
+                ),
+            }}
+        />
     );
 }
