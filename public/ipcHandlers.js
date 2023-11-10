@@ -103,7 +103,6 @@ const fetchImageUrls = async (
     const returnResult = searchResults
         .slice(0, totalNum)
         .map((item) => item.link);
-    console.log(returnResult);
     return returnResult;
 };
 
@@ -121,7 +120,7 @@ const downloadImages = async (
         userAgent ||
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
 
-    startNum = startNum || 0;
+    startNum = parseInt(startNum, 10) || 0;
 
     for (let i = 0; i < imageUrls.length; i++) {
         const imgUrl = imageUrls[i];
