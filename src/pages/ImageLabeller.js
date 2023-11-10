@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { TextField, Box, Typography } from "@mui/material";
+import {
+    TextField,
+    Box,
+    Typography,
+    InputAdornment,
+    IconButton,
+    Button,
+} from "@mui/material";
 import AlertDialog from "../components/AlertDialog";
 import SnackbarInfoAlert from "../components/SnackbarInfoAlert";
 import ImageView from "../components/ImageView";
 import ActionButtons from "../components/ActionButtons";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 
 export default function ImageLabeller() {
     const [folderPath, setFolderPath] = useState("");
@@ -147,14 +155,32 @@ export default function ImageLabeller() {
         <Box sx={{ padding: 2 }}>
             <TextField
                 fullWidth
-                label="Folder Directory"
+                label={
+                    <>
+                        Folder Directory
+                        <span style={{ color: "red" }}>*</span>
+                    </>
+                }
                 value={folderPath}
                 onChange={handleDirectoryChange}
                 margin="normal"
                 variant="outlined"
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="open directory"
+                                onClick={openDirectoryDialog}
+                            >
+                                <FolderOpenIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }}
             />
-            {/* The following shows directory action buttons */}
-            <ActionButtons buttonsProps={directoryButtons} />
+            <Button variant="contained" onClick={handleImageLoad}>
+                Load Images
+            </Button>
             {/* Display Image Index */}
             {images.length > 0 && (
                 <Box textAlign="center" my={2}>
