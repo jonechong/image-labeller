@@ -28,7 +28,6 @@ contextBridge.exposeInMainWorld("api", {
         ),
     receive: (channel, func) => {
         ipcRenderer.on(channel, (event, ...args) => {
-            console.log("Received args:", args);
             func(...args);
         });
     },
