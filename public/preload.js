@@ -18,4 +18,12 @@ contextBridge.exposeInMainWorld("api", {
             cx,
             userAgent
         ),
+    downloadImages: (imageUrls, folderPath, startNum, userAgent) =>
+        ipcRenderer.invoke(
+            "download-images",
+            imageUrls,
+            folderPath,
+            startNum,
+            userAgent
+        ),
 });

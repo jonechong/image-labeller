@@ -2,6 +2,7 @@ const { dialog } = require("electron");
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
+const sharp = require("sharp");
 
 const readImageFiles = async (event, folderPath) => {
     const files = fs.readdirSync(folderPath);
@@ -106,9 +107,49 @@ const fetchImageUrls = async (
     return returnResult;
 };
 
+const downloadImages = async (
+    event,
+    imageUrls,
+    folderPath,
+    startNum,
+    userAgent
+) => {
+    if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
+    }
+    userAgent =
+        userAgent ||
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
+
+    startNum = startNum || 0;
+
+    for (let i = 0; i < imageUrls.length; i++) {
+        const imgUrl = imageUrls[i];
+        try {
+            const response = await axios.get(imgUrl, {
+                responseType: "arraybuffer",
+                headers: { "User-Agent": userAgent },
+            });
+
+            const image = sharp(response.data);
+            const imageFormat = response.headers["content-type"].split("/")[1];
+            const filename = `image_${i + startNum + 1}.${imageFormat}`;
+
+            await image.toFile(path.join(folderPath, filename));
+            console.log(`Downloaded image ${i + startNum + 1}`);
+        } catch (error) {
+            console.error(
+                `Error downloading image ${i + startNum + 1}:`,
+                error.message
+            );
+        }
+    }
+};
+
 module.exports = {
     openDirectoryDialog,
     readImageFiles,
     deleteImageFile,
     fetchImageUrls,
+    downloadImages,
 };
