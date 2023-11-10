@@ -50,7 +50,7 @@ export default function ImageDownloader() {
         }
     };
 
-    const [arrayData, setArrayData] = useState([1, 4, 5]);
+    const [arrayData, setArrayData] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
     const [folderPath, setFolderPath] = useState("");
 
@@ -86,7 +86,24 @@ export default function ImageDownloader() {
         setInputs({ ...inputs, [name]: newValue });
     };
     const handleSubmit = () => {
-        console.log("Submit:", inputs);
+        if (!validateInputs()) return;
+        window.api
+            .fetchImageUrls(
+                inputs.apiKey,
+                inputs.query,
+                inputs.start,
+                inputs.totalNum,
+                inputs.gl !== "" ? inputs.gl : undefined,
+                inputs.hl !== "" ? inputs.hl : undefined,
+                inputs.cx !== "" ? inputs.cx : undefined,
+                inputs.userAgent !== "" ? inputs.userAgent : undefined
+            )
+            .then((response) => {
+                setArrayData(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
     const handleCancel = () => {
