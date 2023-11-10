@@ -45,12 +45,12 @@ const deleteImageFile = async (event, filePath) => {
 const fetchImageUrls = async (
     event,
     apiKey,
-    cx,
     query,
     start,
     totalNum,
     gl,
     hl,
+    cx = "b28673ebe9aa84a44",
     userAgent = ""
 ) => {
     if (userAgent == "") {
