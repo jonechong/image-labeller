@@ -74,7 +74,7 @@ const fetchImageUrls = async (
                         q: query,
                         searchType: "image",
                         num: 10,
-                        start: start,
+                        start: start + 1,
                         gl: gl,
                         hl: hl,
                     },
