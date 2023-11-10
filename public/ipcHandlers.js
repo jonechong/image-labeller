@@ -50,16 +50,20 @@ const fetchImageUrls = async (
     totalNum,
     gl,
     hl,
-    cx = "b28673ebe9aa84a44",
-    userAgent = ""
+    cx,
+    userAgent
 ) => {
-    if (userAgent == "") {
-        userAgent =
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
-    }
+    gl = gl || "SG";
+    hl = hl || "EN";
+    cx = cx || "b28673ebe9aa84a44";
+    userAgent =
+        userAgent ||
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
     const searchResults = [];
+    let currentStart = start;
+    let retries = 3; // Maximum number of retries
 
-    while (searchResults.length < totalNum) {
+    while (searchResults.length < totalNum && retries > 0) {
         try {
             const response = await axios.get(
                 "https://www.googleapis.com/customsearch/v1",
@@ -87,12 +91,16 @@ const fetchImageUrls = async (
             if (!response.data.queries.nextPage) break;
         } catch (error) {
             console.error(`An error occurred: ${error.message}`);
-            // Handle retries, sleep, etc.
+            retries--;
+            if (retries <= 0) {
+                console.error("Max retries reached.");
+                break;
+            }
         }
     }
 
     const returnResult = searchResults
-        .slice(0, totalNumImages)
+        .slice(0, totalNum)
         .map((item) => item.link);
     console.log(returnResult);
     return returnResult;
