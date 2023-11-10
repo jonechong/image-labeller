@@ -85,6 +85,7 @@ export default function ImageDownloader() {
 
         setInputs({ ...inputs, [name]: newValue });
     };
+
     const handleSubmit = () => {
         if (!validateInputs()) return;
         window.api
