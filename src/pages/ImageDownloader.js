@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, TextField, Button, List, ListItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import AlertDialog from "../components/AlertDialog";
 
 export default function ImageDownloader() {
     const navigate = useNavigate();
@@ -42,11 +43,34 @@ export default function ImageDownloader() {
     ];
 
     const [arrayData, setArrayData] = useState([1, 4, 5]);
+    const [showAlert, setShowAlert] = useState(false);
 
-    const handleChange = (e) => {
-        setInputs({ ...inputs, [e.target.name]: e.target.value });
+    const validateInputs = () => {
+        if (
+            !inputs.apiKey ||
+            !inputs.query ||
+            inputs.start === "" ||
+            inputs.totalNum === ""
+        ) {
+            setShowAlert(true);
+            return false;
+        }
+        return true;
     };
 
+    const handleChange = (e) => {
+        const { name, value, type } = e.target;
+        let newValue = value;
+
+        if (type === "number") {
+            const parsedValue = parseInt(value, 10);
+            if (parsedValue < 0) {
+                newValue = "0";
+            }
+        }
+
+        setInputs({ ...inputs, [name]: newValue });
+    };
     const handleSubmit = () => {
         console.log("Submit:", inputs);
     };
@@ -93,6 +117,12 @@ export default function ImageDownloader() {
                     ))}
                 </List>
             </Box>
+            <AlertDialog
+                dialogOpen={showAlert}
+                setDialogOpen={setShowAlert}
+                dialogMessage="Please fill in all required fields."
+                dialogTitle="Invalid Input"
+            />
         </Box>
     );
 }
