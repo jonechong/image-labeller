@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../components/AlertDialog";
-import ActionButtons from "../components/ActionButtons";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 
 export default function ImageDownloader() {
