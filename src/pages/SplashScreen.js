@@ -1,16 +1,16 @@
 import { Button, Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-function SplashScreen({ onOptionSelect }) {
+export default function SplashScreen({ onOptionSelect }) {
+    const navigate = useNavigate();
+
     return (
         <Box textAlign="center" p={4}>
-            <Button variant="contained" onClick={() => onOptionSelect("label")}>
-                Label Images
-            </Button>
-            <Button
-                variant="contained"
-                onClick={() => onOptionSelect("download")}
-            >
+            <Button variant="contained" onClick={() => navigate("download")}>
                 Download Images
+            </Button>
+            <Button variant="contained" onClick={() => navigate("/label")}>
+                Label Images
             </Button>
         </Box>
     );
