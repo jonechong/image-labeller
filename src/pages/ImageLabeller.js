@@ -5,8 +5,10 @@ import SnackbarInfoAlert from "../components/SnackbarInfoAlert";
 import ImageView from "../components/ImageView";
 import ActionButtons from "../components/ActionButtons";
 import DirectoryBrowser from "../components/DirectoryBrowser";
+import { useNavigate } from "react-router-dom";
 
 export default function ImageLabeller() {
+    const navigate = useNavigate();
     const [folderPath, setFolderPath] = useState("");
     const [currentImage, setCurrentImage] = useState(null);
     const [images, setImages] = useState([]);
@@ -134,6 +136,17 @@ export default function ImageLabeller() {
             title: "No Images Found",
         },
     ];
+    const actionButtons = [
+        { label: "Load Images", action: handleImageLoad, variant: "contained" },
+        {
+            label: "Cancel",
+            action: () => {
+                navigate("/");
+            },
+            variant: "contained",
+            color: "secondary",
+        },
+    ];
 
     return (
         <Box sx={{ padding: 2 }}>
@@ -142,9 +155,7 @@ export default function ImageLabeller() {
                 handleDirectoryChange={handleDirectoryChange}
                 openDirectoryDialog={openDirectoryDialog}
             />
-            <Button variant="contained" onClick={handleImageLoad}>
-                Load Images
-            </Button>
+            <ActionButtons buttonsProps={actionButtons} />
             {/* Display Image Index */}
             {images.length > 0 && (
                 <Box textAlign="center" my={2}>
