@@ -110,7 +110,8 @@ export default function ImageDownloader() {
     const [folderPath, setFolderPath] = useState("");
     const [isDownloading, setIsDownloading] = useState(false);
     const [isFetching, setIsFetching] = useState(false);
-    const [progress, setProgress] = useState(0);
+    const [downloadProgress, setDownloadProgress] = useState(0);
+    const [fetchProgress, setFetchProgress] = useState(0);
 
     const handleDirectoryChange = (event) => {
         setFolderPath(event.target.value);
@@ -174,7 +175,7 @@ export default function ImageDownloader() {
             "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
             "https://images.pexels.com/photos/18510514/pexels-photo-18510514/free-photo-of-a-close-up-of-apples-on-a-tree.jpeg",
         ]);
-        setIsFetching(false)
+        setIsFetching(false);
     };
 
     const downloadButtons = [
@@ -197,7 +198,7 @@ export default function ImageDownloader() {
     useEffect(() => {
         if (arrayData.length > 0) {
             setIsDownloading(true);
-            setProgress(0);
+            setDownloadProgress(0);
 
             const downloadDirectory =
                 folderPath + "/" + inputs.newFolderName.replace(/ /g, "_");
@@ -221,7 +222,7 @@ export default function ImageDownloader() {
     useEffect(() => {
         const handleDownloadProgress = (data) => {
             if (data && typeof data.progress === "number") {
-                setProgress(Math.round(data.progress * 100));
+                setDownloadProgress(Math.round(data.progress * 100));
             }
         };
 
@@ -236,6 +237,22 @@ export default function ImageDownloader() {
             );
         };
     }, [isDownloading]);
+
+    useEffect(() => {
+        const handleFetchProgress = (data) => {
+            if (data && typeof data.progress === "number") {
+                setFetchProgress(Math.round(data.progress * 100));
+            }
+        };
+
+        if (isFetching) {
+            window.api.receive("fetch-progress", handleFetchProgress);
+        }
+
+        return () => {
+            window.api.removeListener("fetch-progress", handleFetchProgress);
+        };
+    }, [isFetching]);
 
     return (
         <Box sx={{ margin: "auto", p: 2 }}>
@@ -266,10 +283,15 @@ export default function ImageDownloader() {
                 dialogMessage="Please fill in all required fields."
                 dialogTitle="Invalid Input"
             />
-            <LoadingBar isLoading={isFetching} title="Fetching Images" message="Please wait while the images are being fetched..." />
+            <LoadingBar
+                isLoading={isFetching}
+                progress={fetchProgress}
+                title="Fetching Images"
+                message="Please wait while the images are being fetched..."
+            />
             <LoadingBar
                 isLoading={isDownloading}
-                progress={progress}
+                progress={downloadProgress}
                 title="Download Images"
                 message="Please wait while the images are being downloaded..."
             />
