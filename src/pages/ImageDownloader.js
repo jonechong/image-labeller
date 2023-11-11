@@ -104,12 +104,13 @@ export default function ImageDownloader() {
     const [showAlert, setShowAlert] = useState(false);
     const [folderPath, setFolderPath] = useState("");
     const [isDownloading, setIsDownloading] = useState(false);
-    const [isFetching, setIsFetching] = useState(false);
     const [downloadProgress, setDownloadProgress] = useState(0);
     const [downloadStatuses, setDownloadStatuses] = useState([]);
     const [downloadAcknowledged, setDownloadAcknowledged] = useState(false);
-
+    const [isFetching, setIsFetching] = useState(false);
     const [fetchProgress, setFetchProgress] = useState(0);
+    const [fetchStatuses, setFetchStatuses] = useState([]);
+    const [fetchAcknowledged, setFetchAcknowledged] = useState(undefined);
 
     const handleDirectoryChange = (event) => {
         setFolderPath(event.target.value);
@@ -147,36 +148,43 @@ export default function ImageDownloader() {
     const handleSubmit = () => {
         if (!validateInputs()) return;
         setIsFetching(true);
-        // window.api
-        //     .fetchImageUrls(
-        //         inputs.apiKey,
-        //         inputs.query,
-        //         inputs.start,
-        //         inputs.totalNum,
-        //         inputs.gl !== "" ? inputs.gl : undefined,
-        //         inputs.hl !== "" ? inputs.hl : undefined,
-        //         inputs.cx !== "" ? inputs.cx : undefined,
-        //         inputs.userAgent !== "" ? inputs.userAgent : undefined
-        //     )
-        //     .then((response) => {
-        //         setArrayData(response);
-        //         setIsFetching(false);
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //         setIsFetching(false);
-        //     });
-        const dummyData = [
-            "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            "httpds://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            "httpds://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        ];
-        setArrayData(dummyData);
-        setIsFetching(false);
+        window.api
+            .fetchImageUrls(
+                inputs.apiKey,
+                inputs.query,
+                inputs.start,
+                inputs.totalNum,
+                inputs.gl !== "" ? inputs.gl : undefined,
+                inputs.hl !== "" ? inputs.hl : undefined,
+                inputs.cx !== "" ? inputs.cx : undefined,
+                inputs.userAgent !== "" ? inputs.userAgent : undefined
+            )
+            .then((response) => {
+                if (arrayData.length > 0) {
+                    setArrayData(response);
+                    setFetchAcknowledged(undefined);
+                    setFetchProgress(0);
+                } else {
+                    setFetchAcknowledged(true);
+                    setFetchProgress(100);
+                }
+                setIsFetching(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setIsFetching(false);
+            });
+        // const dummyData = [
+        //     "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //     "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //     "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //     "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //     "httpds://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //     "httpds://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        //     "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        // ];
+        // setArrayData(dummyData);
+        // setIsFetching(false);
     };
 
     const downloadButtons = [
@@ -222,19 +230,18 @@ export default function ImageDownloader() {
         }
     }, [arrayData]);
 
-    useEffect(() => {
-        const handleDownloadProgress = (data) => {
-            console.log(data);
-            if (data && typeof data.progress === "number") {
-                setDownloadProgress(Math.round(data.progress * 100));
-                setDownloadStatuses((prevStatuses) => {
-                    const newStatuses = [...prevStatuses];
-                    newStatuses[data.imageIndex] = data.message;
-                    return newStatuses;
-                });
-            }
-        };
+    const handleDownloadProgress = (data) => {
+        if (data && typeof data.progress === "number") {
+            setDownloadProgress(Math.round(data.progress * 100));
+            setDownloadStatuses((prevStatuses) => {
+                const newStatuses = [...prevStatuses];
+                newStatuses[data.imageIndex] = data.message;
+                return newStatuses;
+            });
+        }
+    };
 
+    useEffect(() => {
         if (isDownloading) {
             window.api.receive("download-progress", handleDownloadProgress);
         }
@@ -247,13 +254,20 @@ export default function ImageDownloader() {
         };
     }, [isDownloading]);
 
-    useEffect(() => {
-        const handleFetchProgress = (data) => {
-            if (data && typeof data.progress === "number") {
-                setFetchProgress(Math.round(data.progress * 100));
+    const handleFetchProgress = (data) => {
+        if (data && typeof data.progress === "number") {
+            setFetchProgress(Math.round(data.progress * 100));
+            if (data.message) {
+                setFetchStatuses((prevStatuses) => {
+                    const newStatuses = [...prevStatuses];
+                    newStatuses[data.fetchIndex] = data.message;
+                    return newStatuses;
+                });
             }
-        };
+        }
+    };
 
+    useEffect(() => {
         if (isFetching) {
             window.api.receive("fetch-progress", handleFetchProgress);
         }
@@ -262,12 +276,6 @@ export default function ImageDownloader() {
             window.api.removeListener("fetch-progress", handleFetchProgress);
         };
     }, [isFetching]);
-
-    useEffect(() => {
-        setDownloadStatuses([]);
-        setDownloadProgress(0);
-        setFetchProgress(0);
-    }, []);
 
     return (
         <Box sx={{ margin: "auto", p: 2 }}>
@@ -301,8 +309,11 @@ export default function ImageDownloader() {
             <LoadingBar
                 isLoading={isFetching}
                 progress={fetchProgress}
+                logs={fetchStatuses}
                 title="Fetching Images"
                 message="Please wait while the images are being fetched..."
+                acknowledgement={fetchAcknowledged}
+                setAcknowledgement={setFetchAcknowledged}
             />
             <LoadingBar
                 isLoading={isDownloading}

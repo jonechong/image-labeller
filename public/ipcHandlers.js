@@ -63,8 +63,9 @@ const fetchImageUrls = async (
     const searchResults = [];
     let retries = 3; // Maximum number of retries
     let fetchedCount = 0; // Number of fetched URLs
+    const requiredFetchCount = Math.ceil(totalNum / 10);
 
-    while (searchResults.length < totalNum && retries > 0) {
+    while (fetchedCount < requiredFetchCount && retries >= 0) {
         try {
             const response = await axios.get(
                 "https://www.googleapis.com/customsearch/v1",
@@ -88,18 +89,29 @@ const fetchImageUrls = async (
             const items = response.data.items || [];
             searchResults.push(...items);
             start += items.length;
-            fetchedCount += items.length;
+            fetchedCount++;
             event.sender.send("fetch-progress", {
-                progress: fetchedCount / totalNum,
+                progress: fetchedCount / requiredFetchCount,
+                fetchIndex: fetchedCount,
             });
             if (!response.data.queries.nextPage) break;
         } catch (error) {
-            console.error(`An error occurred: ${error.message}`);
-            retries--;
             if (retries <= 0) {
+                event.sender.send("fetch-progress", {
+                    progress: 1,
+                    fetchIndex: requiredFetchCount,
+                    message: `Max retries reached.`,
+                });
                 console.error("Max retries reached.");
                 break;
             }
+            event.sender.send("fetch-progress", {
+                progress: fetchedCount / requiredFetchCount,
+                fetchIndex: fetchedCount,
+                message: `An error occurred: ${error.message}. Retrying...`,
+            });
+            console.error(`An error occurred: ${error.message}. Retrying...`);
+            retries--;
         }
     }
 
