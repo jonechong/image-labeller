@@ -85,7 +85,6 @@ const fetchImageUrls = async (
                     },
                 }
             );
-
             const items = response.data.items || [];
             searchResults.push(...items);
             start += items.length;
