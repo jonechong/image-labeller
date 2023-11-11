@@ -56,7 +56,7 @@ export default function LoadingBar({
     return (
         <Box sx={{ margin: "auto", p: 2 }}>
             <Modal
-                open={modalOpen || acknowledgement}
+                open={modalOpen || acknowledgement || false}
                 closeAfterTransition
                 sx={{
                     display: "flex",
