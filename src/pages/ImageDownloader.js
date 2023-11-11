@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-    Box,
-    TextField,
-    CircularProgress,
-    LinearProgress,
-} from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../components/AlertDialog";
 import DirectoryBrowser from "../components/DirectoryBrowser";
@@ -152,25 +147,36 @@ export default function ImageDownloader() {
     const handleSubmit = () => {
         if (!validateInputs()) return;
         setIsFetching(true);
-        window.api
-            .fetchImageUrls(
-                inputs.apiKey,
-                inputs.query,
-                inputs.start,
-                inputs.totalNum,
-                inputs.gl !== "" ? inputs.gl : undefined,
-                inputs.hl !== "" ? inputs.hl : undefined,
-                inputs.cx !== "" ? inputs.cx : undefined,
-                inputs.userAgent !== "" ? inputs.userAgent : undefined
-            )
-            .then((response) => {
-                setArrayData(response);
-                setIsFetching(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setIsFetching(false);
-            });
+        // window.api
+        //     .fetchImageUrls(
+        //         inputs.apiKey,
+        //         inputs.query,
+        //         inputs.start,
+        //         inputs.totalNum,
+        //         inputs.gl !== "" ? inputs.gl : undefined,
+        //         inputs.hl !== "" ? inputs.hl : undefined,
+        //         inputs.cx !== "" ? inputs.cx : undefined,
+        //         inputs.userAgent !== "" ? inputs.userAgent : undefined
+        //     )
+        //     .then((response) => {
+        //         setArrayData(response);
+        //         setIsFetching(false);
+        //     })
+        //     .catch((error) => {
+        //         console.log(error);
+        //         setIsFetching(false);
+        //     });
+        const dummyData = [
+            "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "httpds://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "httpds://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        ];
+        setArrayData(dummyData);
+        setIsFetching(false);
     };
 
     const downloadButtons = [
@@ -218,14 +224,12 @@ export default function ImageDownloader() {
 
     useEffect(() => {
         const handleDownloadProgress = (data) => {
+            console.log(data);
             if (data && typeof data.progress === "number") {
                 setDownloadProgress(Math.round(data.progress * 100));
                 setDownloadStatuses((prevStatuses) => {
                     const newStatuses = [...prevStatuses];
                     newStatuses[data.imageIndex] = data.message;
-                    if (data.progress === 1) {
-                        newStatuses.push("Download Completed!");
-                    }
                     return newStatuses;
                 });
             }
@@ -258,6 +262,12 @@ export default function ImageDownloader() {
             window.api.removeListener("fetch-progress", handleFetchProgress);
         };
     }, [isFetching]);
+
+    useEffect(() => {
+        setDownloadStatuses([]);
+        setDownloadProgress(0);
+        setFetchProgress(0);
+    }, []);
 
     return (
         <Box sx={{ margin: "auto", p: 2 }}>

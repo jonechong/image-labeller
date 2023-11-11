@@ -155,6 +155,11 @@ const downloadImages = async (
             });
         }
     }
+    event.sender.send("download-progress", {
+        progress: 1,
+        imageIndex: imageUrls.length,
+        message: `Download completed!`,
+    });
 };
 
 module.exports = {
