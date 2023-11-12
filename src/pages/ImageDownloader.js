@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Box, TextField } from "@mui/material";
+import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../components/AlertDialog";
 import DirectoryBrowser from "../components/DirectoryBrowser";
 import ActionButtons from "../components/ActionButtons";
 import LoadingBar from "../components/LoadingBarPopup";
+import InputFields from "../components/InputFields";
 
 export default function ImageDownloader() {
     const navigate = useNavigate();
+    const [arrayData, setArrayData] = useState([]);
+    const [showAlert, setShowAlert] = useState(false);
+    const [folderPath, setFolderPath] = useState("");
+    const [isDownloading, setIsDownloading] = useState(false);
+    const [downloadProgress, setDownloadProgress] = useState(0);
+    const [downloadStatuses, setDownloadStatuses] = useState([]);
+    const [downloadAcknowledged, setDownloadAcknowledged] = useState(false);
+    const [isFetching, setIsFetching] = useState(false);
+    const [fetchProgress, setFetchProgress] = useState(0);
+    const [fetchStatuses, setFetchStatuses] = useState([]);
+    const [fetchAcknowledged, setFetchAcknowledged] = useState(undefined);
     const [inputs, setInputs] = useState({
         newFolderName: "",
         apiKey: "",
@@ -30,6 +42,8 @@ export default function ImageDownloader() {
             ),
             name: "newFolderName",
             type: "text",
+            tooltip:
+                "This folder will be created in the selected directory, containing the downloaded images.",
         },
         {
             label: (
@@ -40,6 +54,7 @@ export default function ImageDownloader() {
             ),
             name: "apiKey",
             type: "text",
+            tooltip: "Your custom search API key.",
         },
         {
             label: (
@@ -50,6 +65,7 @@ export default function ImageDownloader() {
             ),
             name: "query",
             type: "text",
+            tooltip: "The search query for the images.",
         },
         {
             label: (
@@ -60,6 +76,8 @@ export default function ImageDownloader() {
             ),
             name: "start",
             type: "number",
+            tooltip:
+                "The starting index of the search results. If you already had 50 images from this query, you would input 50 here.",
         },
         {
             label: (
@@ -70,26 +88,32 @@ export default function ImageDownloader() {
             ),
             name: "totalNum",
             type: "number",
+            tooltip:
+                "Total number of images to download. Note that the maximum is 200 for each search query.",
         },
         {
             label: 'Geolocation for search engine (default "SG")',
             name: "gl",
             type: "text",
+            tooltip: "Location of the host server for the search engine.",
         },
         {
             label: 'Host language for search engine (default "EN")',
             name: "hl",
             type: "text",
+            tooltip: "Language of the host server for the search engine.",
         },
         {
             label: "Search Engine (leave blank if unknown)",
             name: "cx",
             type: "text",
+            tooltip: "The custom search engine ID.",
         },
         {
             label: "User Agent (leave blank if unknown)",
             name: "userAgent",
             type: "text",
+            tooltip: "The user agent to use for the search engine.",
         },
     ];
 
@@ -99,18 +123,6 @@ export default function ImageDownloader() {
             setFolderPath(folderPath);
         }
     };
-
-    const [arrayData, setArrayData] = useState([]);
-    const [showAlert, setShowAlert] = useState(false);
-    const [folderPath, setFolderPath] = useState("");
-    const [isDownloading, setIsDownloading] = useState(false);
-    const [downloadProgress, setDownloadProgress] = useState(0);
-    const [downloadStatuses, setDownloadStatuses] = useState([]);
-    const [downloadAcknowledged, setDownloadAcknowledged] = useState(false);
-    const [isFetching, setIsFetching] = useState(false);
-    const [fetchProgress, setFetchProgress] = useState(0);
-    const [fetchStatuses, setFetchStatuses] = useState([]);
-    const [fetchAcknowledged, setFetchAcknowledged] = useState(undefined);
 
     const handleDirectoryChange = (event) => {
         setFolderPath(event.target.value);
@@ -160,7 +172,7 @@ export default function ImageDownloader() {
                 inputs.userAgent !== "" ? inputs.userAgent : undefined
             )
             .then((response) => {
-                if (arrayData.length > 0) {
+                if (response.length > 0) {
                     setArrayData(response);
                     setFetchAcknowledged(undefined);
                     setFetchProgress(0);
@@ -277,6 +289,22 @@ export default function ImageDownloader() {
         };
     }, [isFetching]);
 
+    useEffect(() => {
+        setArrayData([]);
+        setDownloadStatuses([]);
+        setFetchStatuses([]);
+    }, []);
+
+    useEffect(() => {
+        if (fetchAcknowledged) {
+            setArrayData([]);
+        }
+        if (!fetchAcknowledged) {
+            setFetchStatuses([]);
+            setArrayData([]);
+        }
+    }, [fetchAcknowledged]);
+
     return (
         <Box sx={{ margin: "auto", p: 2 }}>
             <DirectoryBrowser
@@ -284,18 +312,12 @@ export default function ImageDownloader() {
                 handleDirectoryChange={handleDirectoryChange}
                 openDirectoryDialog={openDirectoryDialog}
             />
-            {fieldsConfig.map(({ label, name, type }, index) => (
-                <TextField
-                    key={index}
-                    label={label}
-                    name={name}
-                    type={type}
-                    value={inputs[name]}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                />
-            ))}
+            <InputFields
+                fields={fieldsConfig}
+                values={inputs}
+                onChange={handleChange}
+            />
+
             <Box textAlign="center" mt={2}>
                 <ActionButtons buttonsProps={downloadButtons} />
             </Box>
