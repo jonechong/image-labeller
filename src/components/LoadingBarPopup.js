@@ -85,7 +85,7 @@ export default function LoadingBar({
                     <Typography variant="body2" gutterBottom>
                         {message}
                     </Typography>
-                    {logs && (
+                    {logs.length > 0 && (
                         <Box
                             ref={logsContainerRef}
                             sx={{
