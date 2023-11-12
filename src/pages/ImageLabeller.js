@@ -103,17 +103,17 @@ export default function ImageLabeller() {
 
     const imageActionButtons = [
         {
-            label: "Delete Image",
-            action: handleDeleteImage,
-            variant: "contained",
-            color: "secondary",
-        },
-        {
             label: "Previous Image",
             action: showPrevImage,
             variant: "contained",
         },
         { label: "Next Image", action: showNextImage, variant: "contained" },
+        {
+            label: "Delete Image",
+            action: handleDeleteImage,
+            variant: "contained",
+            color: "secondary",
+        },
     ];
 
     const alertDialogConfigs = [
