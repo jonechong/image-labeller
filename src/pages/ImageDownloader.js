@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import AlertDialog from "../components/AlertDialog";
 import DirectoryBrowser from "../components/DirectoryBrowser";
@@ -264,13 +264,14 @@ export default function ImageDownloader() {
                 handleDownloadProgress
             );
         };
-    }, [isDownloading]);
+    }, [isDownloading, downloadAcknowledged]);
 
     const handleFetchProgress = (data) => {
         if (data && typeof data.progress === "number") {
             setFetchProgress(Math.round(data.progress * 100));
             if (data.message) {
                 setFetchStatuses((prevStatuses) => {
+                    console.log("prev stats: ", prevStatuses);
                     const newStatuses = [...prevStatuses];
                     newStatuses[data.fetchIndex] = data.message;
                     return newStatuses;
@@ -287,7 +288,7 @@ export default function ImageDownloader() {
         return () => {
             window.api.removeListener("fetch-progress", handleFetchProgress);
         };
-    }, [isFetching]);
+    }, [isFetching, fetchAcknowledged]);
 
     useEffect(() => {
         setArrayData([]);
