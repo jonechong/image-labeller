@@ -1,3 +1,10 @@
+const handleKeyDown = (e) => {
+    // Prevent 'e', '+', and '-' from being entered
+    if (["e", "+", "-", "."].includes(e.key)) {
+        e.preventDefault();
+    }
+};
+
 export const ImageDownloaderFields = [
     {
         label: (
@@ -44,6 +51,7 @@ export const ImageDownloaderFields = [
         type: "number",
         tooltip:
             "The starting index of the search results. If you already had 50 images from this query, you would input 50 here.",
+        onKeyDown: handleKeyDown,
     },
     {
         label: (
@@ -56,6 +64,7 @@ export const ImageDownloaderFields = [
         type: "number",
         tooltip:
             "Total number of images to download. Note that the maximum is 200 for each search query.",
+        onKeyDown: handleKeyDown,
     },
     {
         label: 'Geolocation for search engine (default "SG")',

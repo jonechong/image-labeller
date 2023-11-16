@@ -13,6 +13,7 @@ export default function InputFields({ fields, values, onChange }) {
                     type={field.type}
                     value={values[field.name]}
                     onChange={onChange}
+                    onKeyDown={field.onKeyDown}
                     fullWidth
                     margin="normal"
                     InputProps={{
