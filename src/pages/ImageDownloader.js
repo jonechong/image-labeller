@@ -80,16 +80,22 @@ export default function ImageDownloader() {
     const handleSubmit = () => {
         if (!validateInputs()) return;
         setIsFetching(true);
+        const apiKey = inputs.apiKey.trim();
+        const query = inputs.query.trim();
+        const gl = inputs.gl.trim();
+        const hl = inputs.hl.trim();
+        const cx = inputs.cx.trim();
+        const userAgent = inputs.userAgent.trim();
         window.api
             .fetchImageUrls(
-                inputs.apiKey,
-                inputs.query,
+                apiKey,
+                query,
                 inputs.start,
                 inputs.totalNum,
-                inputs.gl !== "" ? inputs.gl : undefined,
-                inputs.hl !== "" ? inputs.hl : undefined,
-                inputs.cx !== "" ? inputs.cx : undefined,
-                inputs.userAgent !== "" ? inputs.userAgent : undefined
+                gl !== "" ? gl : undefined,
+                hl !== "" ? hl : undefined,
+                cx !== "" ? cx : undefined,
+                userAgent !== "" ? userAgent : undefined
             )
             .then((response) => {
                 if (response.length > 0) {
@@ -135,7 +141,6 @@ export default function ImageDownloader() {
             setFetchProgress(Math.round(data.progress * 100));
             if (data.message) {
                 setFetchStatuses((prevStatuses) => {
-                    console.log("prev stats: ", prevStatuses);
                     const newStatuses = [...prevStatuses];
                     newStatuses[data.fetchIndex] = data.message;
                     return newStatuses;
@@ -154,7 +159,9 @@ export default function ImageDownloader() {
             setDownloadStatuses([]);
 
             const downloadDirectory =
-                folderPath + "/" + inputs.newFolderName.replace(/ /g, "_");
+                folderPath +
+                "/" +
+                inputs.newFolderName.trim().replace(/ /g, "_");
             window.api
                 .downloadImages(
                     arrayData,
