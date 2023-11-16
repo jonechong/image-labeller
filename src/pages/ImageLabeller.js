@@ -22,18 +22,21 @@ export default function ImageLabeller() {
     const [noImages, setNoImages] = useState(false);
 
     const handleKeyPress = (event) => {
-        switch (event.key) {
-            case "ArrowLeft":
-                showPrevImage();
-                break;
-            case "ArrowRight":
-                showNextImage();
-                break;
-            case "Delete":
-                handleDeleteImage();
-                break;
-            default:
-                break;
+        // Only allow keypress actions if there are images
+        if (images.length > 0) {
+            switch (event.key) {
+                case "ArrowLeft":
+                    showPrevImage();
+                    break;
+                case "ArrowRight":
+                    showNextImage();
+                    break;
+                case "Delete":
+                    handleDeleteImage();
+                    break;
+                default:
+                    break;
+            }
         }
     };
 
