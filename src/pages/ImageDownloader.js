@@ -27,7 +27,7 @@ export default function ImageDownloader() {
         apiKey: "",
         query: "",
         start: 0,
-        totalNum: 10,
+        totalNum: 200,
         gl: "",
         hl: "",
         cx: "",
@@ -68,6 +68,9 @@ export default function ImageDownloader() {
             const parsedValue = parseInt(value, 10);
             if (parsedValue < 0) {
                 newValue = "0";
+            }
+            if (parsedValue > 200) {
+                newValue = "200";
             }
         }
 
