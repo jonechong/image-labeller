@@ -5,7 +5,7 @@ const handleKeyDown = (e) => {
     }
 };
 
-export const ImageDownloaderFields = [
+export const getImageDownloaderFields =()=> [
     {
         label: (
             <>
