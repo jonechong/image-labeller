@@ -6,8 +6,8 @@ import DirectoryBrowser from "../components/DirectoryBrowser";
 import ActionButtons from "../components/ActionButtons";
 import LoadingBar from "../components/LoadingBarPopup";
 import InputFields from "../components/InputFields";
-import { ImageDownloaderFields } from "../uiConfigs/ImageDownloader/ImageDownloaderFields";
-import { getDownloadButtons } from "../uiConfigs/ImageDownloader/getDownloadButtons";
+import { getImageDownloaderFields } from "../ui/ImageDownloader/getImageDownloaderFields";
+import { getDownloadButtons } from "../ui/ImageDownloader/getDownloadButtons";
 
 export default function ImageDownloader() {
     const navigate = useNavigate();
@@ -150,6 +150,7 @@ export default function ImageDownloader() {
     };
 
     const downloadButtons = getDownloadButtons(handleSubmit, navigate);
+    const imageDownloaderFields = getImageDownloaderFields();
 
     useEffect(() => {
         if (arrayData.length > 0) {
@@ -226,7 +227,7 @@ export default function ImageDownloader() {
                 openDirectoryDialog={openDirectoryDialog}
             />
             <InputFields
-                fields={ImageDownloaderFields}
+                fields={imageDownloaderFields}
                 values={inputs}
                 onChange={handleChange}
             />
