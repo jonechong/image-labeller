@@ -9,7 +9,7 @@ import ImageView from "../components/ImageView";
 import ActionButtons from "../components/ActionButtons";
 import DirectoryBrowser from "../components/DirectoryBrowser";
 import LabelManager from "../components/LabelManager";
-import { getLoadImageButtons } from "../ui/ImageLabeller/getLoadImageButtons";
+import { getLoadImageButton } from "../ui/ImageLabeller/getLoadImageButton";
 import { getImageButtons } from "../ui/ImageLabeller/getImageButtons";
 import { getLabellerDialogs } from "../ui/ImageLabeller/getLabellerDialogs";
 
@@ -152,7 +152,7 @@ export default function ImageLabeller() {
         setInvalidDirectory,
         setNoImages
     );
-    const loadImageButtons = getLoadImageButtons(handleImageLoad, navigate);
+    const loadImageButton = getLoadImageButton(handleImageLoad, navigate);
     const imageButtons = getImageButtons(
         showPrevImage,
         showNextImage,
@@ -185,16 +185,9 @@ export default function ImageLabeller() {
                 >
                     <ArrowBackIcon />
                 </IconButton>
-                <Typography variant="h6">Image Labeller</Typography>
+                <Typography variant="h6">Label Images</Typography>
             </Box>
-            <DirectoryBrowser
-                folderPath={folderPath}
-                handleDirectoryChange={handleDirectoryChange}
-                openDirectoryDialog={openDirectoryDialog}
-            />
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <ActionButtons buttonsProps={loadImageButtons} />
-            </Box>
+
             {/* Show images options if there are images */}
             {currentImage && (
                 <>
@@ -231,12 +224,35 @@ export default function ImageLabeller() {
                     </Box>
 
                     {/* The following shows image action buttons if there is a current image */}
-
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <ActionButtons buttonsProps={imageButtons} />
-                    </Box>
                 </>
             )}
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <Box sx={{ width: "50%" }}>
+                    <DirectoryBrowser
+                        folderPath={folderPath}
+                        handleDirectoryChange={handleDirectoryChange}
+                        openDirectoryDialog={openDirectoryDialog}
+                        sx={{ flexGrow: 1 }}
+                    />
+                </Box>
+
+                <Box
+                    sx={{
+                        display: "flex",
+                        padding: 2,
+                        flexShrink: 0,
+                        alignContent: "center",
+                    }}
+                >
+                    <ActionButtons buttonsProps={loadImageButton} />
+                </Box>
+            </Box>
+            {currentImage && (
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <ActionButtons buttonsProps={imageButtons} />
+                </Box>
+            )}
+
             {/* This snackbar shows if there is no more images when user click previous/next */}
             <SnackbarInfoAlert
                 alertOpen={noMoreImages}
