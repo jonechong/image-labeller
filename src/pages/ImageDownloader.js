@@ -11,7 +11,7 @@ import InputFields from "../components/InputFields";
 
 // Import UI
 import { getImageDownloaderFields } from "../ui/ImageDownloader/getImageDownloaderFields";
-import { getDownloadButtons } from "../ui/ImageDownloader/getDownloadButtons";
+import { getDownloadButton } from "../ui/ImageDownloader/getDownloadButton";
 
 // Import icons
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -156,7 +156,7 @@ export default function ImageDownloader() {
         }
     };
 
-    const downloadButtons = getDownloadButtons(handleSubmit, navigate);
+    const downloadButton = getDownloadButton(handleSubmit);
     const imageDownloaderFields = getImageDownloaderFields();
 
     useEffect(() => {
@@ -258,7 +258,7 @@ export default function ImageDownloader() {
                 />
 
                 <Box textAlign="center" mt={2}>
-                    <ActionButtons buttonsProps={downloadButtons} />
+                    <ActionButtons buttonsProps={downloadButton} />
                 </Box>
 
                 <AlertDialog
