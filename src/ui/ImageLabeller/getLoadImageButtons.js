@@ -1,11 +1,3 @@
-export const getLoadImageButtons = (handleImageLoad, navigate) => [
+export const getLoadImageButtons = (handleImageLoad) => [
     { label: "Load Images", action: handleImageLoad, variant: "contained" },
-    {
-        label: "Cancel",
-        action: () => {
-            navigate("/");
-        },
-        variant: "contained",
-        color: "secondary",
-    },
 ];

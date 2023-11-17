@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, IconButton } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+// Import components
 import AlertDialog from "../components/AlertDialog";
 import SnackbarInfoAlert from "../components/SnackbarInfoAlert";
 import ImageView from "../components/ImageView";
 import ActionButtons from "../components/ActionButtons";
 import DirectoryBrowser from "../components/DirectoryBrowser";
-import { useNavigate } from "react-router-dom";
+import LabelManager from "../components/LabelManager";
 import { getLoadImageButtons } from "../ui/ImageLabeller/getLoadImageButtons";
 import { getImageButtons } from "../ui/ImageLabeller/getImageButtons";
 import { getLabellerDialogs } from "../ui/ImageLabeller/getLabellerDialogs";
-import LabelManager from "../components/LabelManager";
+
+// Import icons
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function ImageLabeller() {
     const navigate = useNavigate();
@@ -165,6 +170,23 @@ export default function ImageLabeller() {
 
     return (
         <Box sx={{ padding: 2 }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    marginBottom: 2,
+                }}
+            >
+                <IconButton
+                    onClick={() => {
+                        navigate("/");
+                    }}
+                >
+                    <ArrowBackIcon />
+                </IconButton>
+                <Typography variant="h6">Image Labeller</Typography>
+            </Box>
             <DirectoryBrowser
                 folderPath={folderPath}
                 handleDirectoryChange={handleDirectoryChange}
@@ -215,7 +237,6 @@ export default function ImageLabeller() {
                     </Box>
                 </>
             )}
-
             {/* This snackbar shows if there is no more images when user click previous/next */}
             <SnackbarInfoAlert
                 alertOpen={noMoreImages}
