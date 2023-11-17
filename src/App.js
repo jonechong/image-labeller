@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
     return (
-        <Router>
+        <Router style={{ display: "flex", flex: 1 }}>
             <Routes>
                 <Route path="/" element={<SplashScreen />} />
                 <Route path="/label" element={<ImageLabeller />} />
