@@ -15,7 +15,7 @@ export default function SplashScreen({ onOptionSelect }) {
             sx={{
                 height: "100%",
                 backgroundColor: theme.palette.background.default,
-                backgroundImage: 'url("background-image-url.jpg")', // Add a relevant background image
+                backgroundImage: 'url("background-image-url.jpg")', // Import as needed
                 backgroundSize: "cover",
                 backgroundPosition: "center",
             }}
@@ -35,9 +35,6 @@ export default function SplashScreen({ onOptionSelect }) {
                         boxShadow: theme.shadows[3],
                         padding: theme.spacing(2),
                         fontSize: "large",
-                        "&:hover": {
-                            backgroundColor: theme.palette.primary.dark, // Change for hover effect
-                        },
                     }}
                 >
                     Download Images
@@ -50,9 +47,6 @@ export default function SplashScreen({ onOptionSelect }) {
                         boxShadow: theme.shadows[3],
                         padding: theme.spacing(2),
                         fontSize: "large",
-                        "&:hover": {
-                            backgroundColor: theme.palette.primary.dark, // Change for hover effect
-                        },
                     }}
                 >
                     Label Images
