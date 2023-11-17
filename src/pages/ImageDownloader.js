@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Typography, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
+// Import components
 import AlertDialog from "../components/AlertDialog";
 import DirectoryBrowser from "../components/DirectoryBrowser";
 import ActionButtons from "../components/ActionButtons";
 import LoadingBar from "../components/LoadingBarPopup";
 import InputFields from "../components/InputFields";
+
+// Import UI
 import { getImageDownloaderFields } from "../ui/ImageDownloader/getImageDownloaderFields";
 import { getDownloadButtons } from "../ui/ImageDownloader/getDownloadButtons";
+
+// Import icons
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function ImageDownloader() {
     const navigate = useNavigate();
@@ -220,46 +227,65 @@ export default function ImageDownloader() {
     }, [fetchAcknowledged]);
 
     return (
-        <Box sx={{ margin: "auto", p: 2 }}>
-            <DirectoryBrowser
-                folderPath={folderPath}
-                handleDirectoryChange={handleDirectoryChange}
-                openDirectoryDialog={openDirectoryDialog}
-            />
-            <InputFields
-                fields={imageDownloaderFields}
-                values={inputs}
-                onChange={handleChange}
-            />
-
-            <Box textAlign="center" mt={2}>
-                <ActionButtons buttonsProps={downloadButtons} />
+        <>
+            <Box
+                sx={{
+                    padding: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                }}
+            >
+                <IconButton
+                    onClick={() => {
+                        navigate("/");
+                    }}
+                >
+                    <ArrowBackIcon />
+                </IconButton>
+                <Typography variant="h6">Download Images</Typography>
             </Box>
+            <Box sx={{ width: "80%", margin: "auto", p: 2 }}>
+                <DirectoryBrowser
+                    folderPath={folderPath}
+                    handleDirectoryChange={handleDirectoryChange}
+                    openDirectoryDialog={openDirectoryDialog}
+                />
+                <InputFields
+                    fields={imageDownloaderFields}
+                    values={inputs}
+                    onChange={handleChange}
+                />
 
-            <AlertDialog
-                dialogOpen={showAlert}
-                setDialogOpen={setShowAlert}
-                dialogMessage="Please fill in all required fields."
-                dialogTitle="Invalid Input"
-            />
-            <LoadingBar
-                isLoading={isFetching}
-                progress={fetchProgress}
-                logs={fetchStatuses}
-                title="Fetching Images"
-                message="Please wait while the images are being fetched..."
-                acknowledgement={fetchAcknowledged}
-                setAcknowledgement={setFetchAcknowledged}
-            />
-            <LoadingBar
-                isLoading={isDownloading}
-                progress={downloadProgress}
-                title="Downloading Images"
-                message="Please wait while the images are being downloaded..."
-                logs={downloadStatuses}
-                acknowledgement={downloadAcknowledged}
-                setAcknowledgement={setDownloadAcknowledged}
-            />
-        </Box>
+                <Box textAlign="center" mt={2}>
+                    <ActionButtons buttonsProps={downloadButtons} />
+                </Box>
+
+                <AlertDialog
+                    dialogOpen={showAlert}
+                    setDialogOpen={setShowAlert}
+                    dialogMessage="Please fill in all required fields."
+                    dialogTitle="Invalid Input"
+                />
+                <LoadingBar
+                    isLoading={isFetching}
+                    progress={fetchProgress}
+                    logs={fetchStatuses}
+                    title="Fetching Images"
+                    message="Please wait while the images are being fetched..."
+                    acknowledgement={fetchAcknowledged}
+                    setAcknowledgement={setFetchAcknowledged}
+                />
+                <LoadingBar
+                    isLoading={isDownloading}
+                    progress={downloadProgress}
+                    title="Downloading Images"
+                    message="Please wait while the images are being downloaded..."
+                    logs={downloadStatuses}
+                    acknowledgement={downloadAcknowledged}
+                    setAcknowledgement={setDownloadAcknowledged}
+                />
+            </Box>
+        </>
     );
 }
