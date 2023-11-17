@@ -114,6 +114,7 @@ export default function LabelManager({
                     display: "flex",
                     alignContent: "center",
                     flexDirection: "column",
+                    maxHeight: "60vh",
                 }}
             >
                 <Box sx={{ display: "flex", gap: 1 }}>
@@ -134,7 +135,6 @@ export default function LabelManager({
                     sx={{
                         display: "flex",
                         flexDirection: "column",
-                        maxHeight: 500,
                         overflowY: "auto",
                     }}
                 >
