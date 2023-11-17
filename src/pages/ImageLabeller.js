@@ -9,6 +9,8 @@ import ImageView from "../components/ImageView";
 import ActionButtons from "../components/ActionButtons";
 import DirectoryBrowser from "../components/DirectoryBrowser";
 import LabelManager from "../components/LabelManager";
+
+//Import UI
 import { getLoadImageButton } from "../ui/ImageLabeller/getLoadImageButton";
 import { getImageButtons } from "../ui/ImageLabeller/getImageButtons";
 import { getLabellerDialogs } from "../ui/ImageLabeller/getLabellerDialogs";
