@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
     Box,
     TextField,
@@ -8,6 +8,66 @@ import {
     IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
+const ItemTypes = {
+    LABEL: "label",
+};
+
+function DraggableLabel({
+    label,
+    index,
+    moveLabel,
+    selectedLabels,
+    onLabelChange,
+    onDelete,
+}) {
+    const [, drag] = useDrag(
+        () => ({
+            type: ItemTypes.LABEL,
+            item: { label, index },
+        }),
+        [label, index]
+    );
+
+    const [, drop] = useDrop(
+        () => ({
+            accept: ItemTypes.LABEL,
+            hover(item, monitor) {
+                if (item.index !== index) {
+                    moveLabel(item.index, index);
+                    item.index = index;
+                }
+            },
+        }),
+        [index, moveLabel]
+    );
+
+    return (
+        <Box
+            ref={(node) => drag(drop(node))}
+            sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+            }}
+        >
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={selectedLabels.has(label)}
+                        onChange={(e) => onLabelChange(label, e.target.checked)}
+                    />
+                }
+                label={label}
+            />
+            <IconButton onClick={() => onDelete(label)} size="small">
+                <DeleteIcon />
+            </IconButton>
+        </Box>
+    );
+}
 
 export default function LabelManager({
     labels,
@@ -30,65 +90,60 @@ export default function LabelManager({
         setLabels(updatedLabels);
     };
 
+    const moveLabel = useCallback(
+        (dragIndex, hoverIndex) => {
+            const newLabels = Array.from(labels);
+            const [draggedLabel] = newLabels.splice(dragIndex, 1);
+            newLabels.splice(hoverIndex, 0, draggedLabel);
+            setLabels(new Set(newLabels));
+        },
+        [labels, setLabels]
+    );
+
     return (
-        <Box
-            sx={{
-                display: "flex",
-                alignContent: "center",
-                flexDirection: "column",
-            }}
-        >
-            <Box sx={{ display: "flex", gap: 1 }}>
-                <TextField
-                    label="New Label"
-                    value={newLabel}
-                    onChange={(e) => setNewLabel(e.target.value)}
-                />
-                <Button
-                    sx={{ margin: 1 }}
-                    onClick={addLabel}
-                    variant="contained"
-                >
-                    Add
-                </Button>
-            </Box>
+        <DndProvider backend={HTML5Backend}>
             <Box
                 sx={{
                     display: "flex",
+                    alignContent: "center",
                     flexDirection: "column",
-                    maxHeight: 500,
-                    overflowY: "auto",
                 }}
             >
-                {Array.from(labels).map((label) => (
-                    <Box
-                        key={label}
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                        }}
+                <Box sx={{ display: "flex", gap: 1 }}>
+                    <TextField
+                        label="New Label"
+                        value={newLabel}
+                        onChange={(e) => setNewLabel(e.target.value)}
+                    />
+                    <Button
+                        sx={{ margin: 1 }}
+                        onClick={addLabel}
+                        variant="contained"
                     >
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={selectedLabels.has(label)}
-                                    onChange={(e) =>
-                                        onLabelChange(label, e.target.checked)
-                                    }
-                                />
-                            }
+                        Add
+                    </Button>
+                </Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        maxHeight: 500,
+                        overflowY: "auto",
+                    }}
+                >
+                    {Array.from(labels).map((label, index) => (
+                        <DraggableLabel
+                            key={label}
                             label={label}
+                            index={index}
+                            moveLabel={moveLabel}
+                            selectedLabels={selectedLabels}
+                            onLabelChange={onLabelChange}
+                            onDelete={handleDeleteLabel}
                         />
-                        <IconButton
-                            onClick={() => handleDeleteLabel(label)}
-                            size="small"
-                        >
-                            <DeleteIcon />
-                        </IconButton>
-                    </Box>
-                ))}
+                    ))}
+                </Box>
             </Box>
-        </Box>
+        </DndProvider>
     );
 }
