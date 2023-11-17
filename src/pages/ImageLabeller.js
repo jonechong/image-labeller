@@ -203,6 +203,7 @@ export default function ImageLabeller() {
                             selectedLabels={
                                 selectedLabels[currentImage] || new Set()
                             }
+                            setSelectedLabels={setSelectedLabels}
                             onLabelChange={handleLabelChange}
                         />
                     </Box>
