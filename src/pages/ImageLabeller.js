@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { getLoadImageButtons } from "../ui/ImageLabeller/getLoadImageButtons";
 import { getImageButtons } from "../ui/ImageLabeller/getImageButtons";
 import { getLabellerDialogs } from "../ui/ImageLabeller/getLabellerDialogs";
+import LabelManager from "../components/LabelManager";
 
 export default function ImageLabeller() {
     const navigate = useNavigate();
@@ -20,6 +21,8 @@ export default function ImageLabeller() {
     const [imagesDeleted, setImagesDeleted] = useState(false);
     const [invalidDirectory, setInvalidDirectory] = useState(false);
     const [noImages, setNoImages] = useState(false);
+    const [labels, setLabels] = useState(new Set());
+    const [selectedLabels, setSelectedLabels] = useState({});
 
     const handleKeyPress = (event) => {
         // Only allow keypress actions if there are images
@@ -45,6 +48,19 @@ export default function ImageLabeller() {
         if (folderPath) {
             setFolderPath(folderPath);
         }
+    };
+
+    const handleLabelChange = (label, isChecked) => {
+        const updatedSelections = { ...selectedLabels };
+        if (isChecked) {
+            if (!updatedSelections[currentImage]) {
+                updatedSelections[currentImage] = new Set();
+            }
+            updatedSelections[currentImage].add(label);
+        } else {
+            updatedSelections[currentImage]?.delete(label);
+        }
+        setSelectedLabels(updatedSelections);
     };
 
     const handleDirectoryChange = (event) => {
@@ -154,22 +170,51 @@ export default function ImageLabeller() {
                 handleDirectoryChange={handleDirectoryChange}
                 openDirectoryDialog={openDirectoryDialog}
             />
-            <ActionButtons buttonsProps={loadImageButtons} />
-            {/* Display Image Index */}
-            {images.length > 0 && (
-                <Box textAlign="center" my={2}>
-                    <Typography variant="h6">
-                        Image {currentIndex + 1} of {images.length}
-                    </Typography>
-                    <Typography>
-                        Filename: {extractFilename(currentImage)}
-                    </Typography>
-                </Box>
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <ActionButtons buttonsProps={loadImageButtons} />
+            </Box>
+            {/* Show images options if there are images */}
+            {currentImage && (
+                <>
+                    {/* Display image index */}
+                    <Box textAlign="center" my={2}>
+                        <Typography variant="h6">
+                            Image {currentIndex + 1} of {images.length}
+                        </Typography>
+                        <Typography>
+                            Filename: {extractFilename(currentImage)}
+                        </Typography>
+                    </Box>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 2,
+                        }}
+                    >
+                        {/* Display Image */}
+                        <ImageView currentImage={currentImage} />
+                        {/* Checkbox for labels */}
+                        <LabelManager
+                            style={{ marginTop: 10 }}
+                            labels={labels}
+                            setLabels={setLabels}
+                            selectedLabels={
+                                selectedLabels[currentImage] || new Set()
+                            }
+                            onLabelChange={handleLabelChange}
+                        />
+                    </Box>
+
+                    {/* The following shows image action buttons if there is a current image */}
+
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <ActionButtons buttonsProps={imageButtons} />
+                    </Box>
+                </>
             )}
-            {/* The following shows the image if there is a current image */}
-            <ImageView currentImage={currentImage} />
-            {/* The following shows image action buttons if there is a current image */}
-            {currentImage && <ActionButtons buttonsProps={imageButtons} />}
+
             {/* This snackbar shows if there is no more images when user click previous/next */}
             <SnackbarInfoAlert
                 alertOpen={noMoreImages}
