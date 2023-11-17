@@ -118,6 +118,7 @@ export default function ImageLabeller() {
             setCurrentIndex(0);
         } catch (error) {
             console.error("Error reading images: ", error);
+            setInvalidDirectory(true);
         }
     };
 
