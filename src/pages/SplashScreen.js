@@ -1,23 +1,47 @@
-import { Button, Box } from "@mui/material";
+import { Button, Box, Typography, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export default function SplashScreen({ onOptionSelect }) {
     const navigate = useNavigate();
+    const theme = useTheme();
 
     return (
         <Box
-            textAlign="center"
-            p={4}
             display="flex"
+            flexDirection="column"
             justifyContent="center"
-            gap={2}
+            alignItems="center"
+            textAlign="center"
+            sx={{
+                height: "100%",
+                backgroundColor: theme.palette.background.default,
+            }}
         >
-            <Button variant="contained" onClick={() => navigate("/download")}>
-                Download Images
-            </Button>
-            <Button variant="contained" onClick={() => navigate("/label")}>
-                Label Images
-            </Button>
+            <Typography variant="h4" gutterBottom>
+                Eymage
+            </Typography>
+            <Box display="flex" justifyContent="center" gap={theme.spacing(2)}>
+                <Button
+                    variant="contained"
+                    onClick={() => navigate("/download")}
+                    sx={{
+                        borderRadius: theme.shape.borderRadius,
+                        boxShadow: theme.shadows[3],
+                    }}
+                >
+                    Download Images
+                </Button>
+                <Button
+                    variant="contained"
+                    onClick={() => navigate("/label")}
+                    sx={{
+                        borderRadius: theme.shape.borderRadius,
+                        boxShadow: theme.shadows[3],
+                    }}
+                >
+                    Label Images
+                </Button>
+            </Box>
         </Box>
     );
 }
