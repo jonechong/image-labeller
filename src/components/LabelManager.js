@@ -117,7 +117,7 @@ export default function LabelManager({
                     maxHeight: "60vh",
                 }}
             >
-                <Box sx={{ display: "flex", gap: 1 }}>
+                <Box sx={{ display: "flex", gap: 1, paddingLeft: 1 }}>
                     <TextField
                         label="New Label"
                         value={newLabel}
@@ -136,6 +136,8 @@ export default function LabelManager({
                         display: "flex",
                         flexDirection: "column",
                         overflowY: "auto",
+                        paddingLeft: 2,
+                        paddingRight: 2,
                     }}
                 >
                     {Array.from(labels).map((label, index) => (
