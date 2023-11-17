@@ -73,6 +73,7 @@ export default function LabelManager({
     labels,
     setLabels,
     selectedLabels,
+    setSelectedLabels,
     onLabelChange,
 }) {
     const [newLabel, setNewLabel] = useState("");
@@ -88,6 +89,12 @@ export default function LabelManager({
         const updatedLabels = new Set(labels);
         updatedLabels.delete(labelToDelete);
         setLabels(updatedLabels);
+
+        if (selectedLabels.has(labelToDelete)) {
+            const updatedSelectedLabels = new Set(selectedLabels);
+            updatedSelectedLabels.delete(labelToDelete);
+            setSelectedLabels(updatedSelectedLabels);
+        }
     };
 
     const moveLabel = useCallback(
