@@ -15,10 +15,16 @@ export default function SplashScreen({ onOptionSelect }) {
             sx={{
                 height: "100%",
                 backgroundColor: theme.palette.background.default,
+                backgroundImage: 'url("background-image-url.jpg")', // Add a relevant background image
+                backgroundSize: "cover",
+                backgroundPosition: "center",
             }}
         >
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
                 Eymage
+            </Typography>
+            <Typography variant="subtitle1" sx={{ mb: theme.spacing(3) }}>
+                Best image dataset creation tool this world's ever seen
             </Typography>
             <Box display="flex" justifyContent="center" gap={theme.spacing(2)}>
                 <Button
@@ -27,6 +33,11 @@ export default function SplashScreen({ onOptionSelect }) {
                     sx={{
                         borderRadius: theme.shape.borderRadius,
                         boxShadow: theme.shadows[3],
+                        padding: theme.spacing(2),
+                        fontSize: "large",
+                        "&:hover": {
+                            backgroundColor: theme.palette.primary.dark, // Change for hover effect
+                        },
                     }}
                 >
                     Download Images
@@ -37,6 +48,11 @@ export default function SplashScreen({ onOptionSelect }) {
                     sx={{
                         borderRadius: theme.shape.borderRadius,
                         boxShadow: theme.shadows[3],
+                        padding: theme.spacing(2),
+                        fontSize: "large",
+                        "&:hover": {
+                            backgroundColor: theme.palette.primary.dark, // Change for hover effect
+                        },
                     }}
                 >
                     Label Images
