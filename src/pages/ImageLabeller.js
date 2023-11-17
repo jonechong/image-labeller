@@ -205,7 +205,7 @@ export default function ImageLabeller() {
                         sx={{
                             display: "flex",
                             flexDirection: "row",
-                            alignItems: "center",
+                            alignItems: "flex-start",
                             gap: 2,
                         }}
                     >
