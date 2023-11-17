@@ -177,7 +177,6 @@ export default function ImageLabeller() {
                     display: "flex",
                     alignItems: "center",
                     gap: 1,
-                    marginBottom: 2,
                 }}
             >
                 <IconButton
