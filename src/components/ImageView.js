@@ -5,12 +5,13 @@ export default function ImageView({ currentImage }) {
         <>
             <Card
                 sx={{
-                    maxWidth: "100%",
+                    width: "100%",
                     boxShadow: 3, // Adjusts the shadow of the card
                     border: "1px solid #ccc", // Adds a border
                     borderRadius: 1, // Adjusts the border radius
                     margin: "auto", // Centers the card
                     textAlign: "center",
+                    height: "60vh",
                 }}
             >
                 <CardMedia
@@ -18,7 +19,7 @@ export default function ImageView({ currentImage }) {
                     image={currentImage}
                     alt="Loaded Image"
                     sx={{
-                        maxHeight: 500,
+                        maxHeight: "100%",
                         maxWidth: "100%",
                         objectFit: "contain",
                     }}
