@@ -13,7 +13,9 @@ function createWindow() {
             webSecurity: false,
             preload: path.join(__dirname, "preload.js"),
             nodeIntegration: true,
+            devTools: process.env.NODE_ENV !== "production",
         },
+        autoHideMenuBar: true, // Add this line
     });
 
     const startUrl = isDev
