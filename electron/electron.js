@@ -1,7 +1,14 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 const isDev = require("electron-is-dev");
-const ipcHandlers = require("./ipcHandlers");
+
+//import handlers
+const DirectoryHandler = require("./handlers/DirectoryHandler");
+const ImageHandler = require("./handlers/ImageHandler");
+const DownloadHandler = require("./handlers/DownloadHandler");
+const directoryHandler = new DirectoryHandler();
+const downloadHandler = new DownloadHandler();
+const imageHandler = new ImageHandler();
 
 let mainWindow;
 
@@ -42,9 +49,14 @@ app.on("activate", function () {
     }
 });
 
-ipcMain.handle("open-directory-dialog", ipcHandlers.openDirectoryDialog);
-ipcMain.handle("read-image-files", ipcHandlers.readImageFiles);
-ipcMain.handle("delete-image-file", ipcHandlers.deleteImageFile);
-ipcMain.handle("fetch-image-urls", ipcHandlers.fetchImageUrls);
-ipcMain.handle("download-images", ipcHandlers.downloadImages);
-ipcMain.handle("validate-directory", ipcHandlers.validateDirectory);
+//Directory Handlers
+ipcMain.handle("open-directory-dialog", directoryHandler.openDirectoryDialog);
+ipcMain.handle("validate-directory", directoryHandler.validateDirectory);
+
+//Download Handlers
+ipcMain.handle("fetch-image-urls", downloadHandler.fetchImageUrls);
+ipcMain.handle("download-images", downloadHandler.downloadImages);
+
+// Image Handlers
+ipcMain.handle("read-image-files", imageHandler.readImageFiles);
+ipcMain.handle("delete-image-file", imageHandler.deleteImageFile);
