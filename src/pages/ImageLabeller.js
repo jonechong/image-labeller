@@ -44,6 +44,9 @@ export default function ImageLabeller() {
                 case "Delete":
                     handleDeleteImage();
                     break;
+                case "m":
+                    handleMoveImage();
+                    break;
                 default:
                     break;
             }
@@ -99,6 +102,10 @@ export default function ImageLabeller() {
 
     const extractFilename = (path) => {
         return path.split("/").pop().split("\\").pop(); // Handles both UNIX and Windows paths
+    };
+
+    const handleMoveImage = async () => {
+        console.log("Move image");
     };
 
     const handleImageLoad = async () => {
@@ -158,7 +165,8 @@ export default function ImageLabeller() {
     const imageButtons = getImageButtons(
         showPrevImage,
         showNextImage,
-        handleDeleteImage
+        handleDeleteImage,
+        handleMoveImage
     );
 
     useEffect(() => {
