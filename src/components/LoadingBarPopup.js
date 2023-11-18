@@ -89,7 +89,7 @@ export default function LoadingBar({
                         <Box
                             ref={logsContainerRef}
                             sx={{
-                                maxHeight: "200px",
+                                maxHeight: "15vh",
                                 overflowY: "auto",
                                 borderRadius: 2,
                                 boxShadow: 1,
