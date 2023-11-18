@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
@@ -52,6 +52,7 @@ app.on("activate", function () {
 //Directory Handlers
 ipcMain.handle("open-directory-dialog", directoryHandler.openDirectoryDialog);
 ipcMain.handle("validate-directory", directoryHandler.validateDirectory);
+ipcMain.handle("create-folder", directoryHandler.createFolder);
 
 //Download Handlers
 ipcMain.handle("fetch-image-urls", downloadHandler.fetchImageUrls);

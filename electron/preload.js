@@ -1,15 +1,7 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("api", {
-    openDirectoryDialog: () => {
-        return ipcRenderer.invoke("open-directory-dialog");
-    },
-    readImageFiles: (folderPath) => {
-        return ipcRenderer.invoke("read-image-files", folderPath);
-    },
-    deleteImageFile: (filePath) => {
-        return ipcRenderer.invoke("delete-image-file", filePath);
-    },
+    // download functions
     fetchImageUrls: (apiKey, query, start, totalNum, gl, hl, cx, userAgent) => {
         return ipcRenderer.invoke(
             "fetch-image-urls",
@@ -32,8 +24,24 @@ contextBridge.exposeInMainWorld("api", {
             userAgent
         );
     },
+
+    // directory functions
+    openDirectoryDialog: () => {
+        return ipcRenderer.invoke("open-directory-dialog");
+    },
     validateDirectory: (folderPath) => {
         return ipcRenderer.invoke("validate-directory", folderPath);
+    },
+    createFolder: (folderPath) => {
+        return ipcRenderer.invoke("create-folder", folderPath);
+    },
+
+    // image functions
+    readImageFiles: (folderPath) => {
+        return ipcRenderer.invoke("read-image-files", folderPath);
+    },
+    deleteImageFile: (filePath) => {
+        return ipcRenderer.invoke("delete-image-file", filePath);
     },
     receive: (channel, func) => {
         ipcRenderer.on(channel, (event, ...args) => {

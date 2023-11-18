@@ -8,8 +8,13 @@ class DirectoryHandler {
         });
         return filePaths[0];
     }
+
     async validateDirectory(event, folderPath) {
         return fs.existsSync(folderPath);
+    }
+
+    async createFolder(event, folderPath) {
+        return fs.mkdirSync(folderPath);
     }
 }
 
