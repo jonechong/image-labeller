@@ -169,7 +169,7 @@ export default function ImageDownloader() {
             const downloadDirectory =
                 folderPath +
                 "/" +
-                inputs.newFolderName.trim().replace(/ /g, "_");
+                inputs.newFolderName.trim().replace(/ /g, "_").toLowerCase();
             window.api
                 .downloadImages(
                     arrayData,
