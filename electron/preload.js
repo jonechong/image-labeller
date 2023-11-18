@@ -32,8 +32,15 @@ contextBridge.exposeInMainWorld("api", {
     validateDirectory: (folderPath) => {
         return ipcRenderer.invoke("validate-directory", folderPath);
     },
-    createFolder: (folderPath) => {
-        return ipcRenderer.invoke("create-folder", folderPath);
+    createFolder: (currentPath, folderName) => {
+        return ipcRenderer.invoke("create-folder", currentPath, folderName);
+    },
+    copyFileToDirectory: (imagePath, destPath) => {
+        return ipcRenderer.invoke(
+            "copy-file-to-directory",
+            imagePath,
+            destPath
+        );
     },
 
     // image functions

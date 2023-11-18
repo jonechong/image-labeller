@@ -53,6 +53,7 @@ app.on("activate", function () {
 ipcMain.handle("open-directory-dialog", directoryHandler.openDirectoryDialog);
 ipcMain.handle("validate-directory", directoryHandler.validateDirectory);
 ipcMain.handle("create-folder", directoryHandler.createFolder);
+ipcMain.handle("copy-file-to-directory", directoryHandler.copyFileToDirectory);
 
 //Download Handlers
 ipcMain.handle("fetch-image-urls", downloadHandler.fetchImageUrls);
