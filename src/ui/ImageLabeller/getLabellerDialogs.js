@@ -15,7 +15,7 @@ export const getLabellerDialogs = (
     {
         open: invalidDirectory,
         setOpen: setInvalidDirectory,
-        message: "Please select a valid directory first.",
+        message: "Please input a valid directory first.",
         title: "Invalid Directory",
     },
     {
