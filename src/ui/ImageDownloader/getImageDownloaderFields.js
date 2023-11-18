@@ -5,7 +5,7 @@ const handleKeyDown = (e) => {
     }
 };
 
-export const getImageDownloaderFields =()=> [
+export const getImageDownloaderFields = () => [
     {
         label: (
             <>
@@ -16,7 +16,7 @@ export const getImageDownloaderFields =()=> [
         name: "newFolderName",
         type: "text",
         tooltip:
-            "This folder will be created in the selected directory, containing the downloaded images.",
+            'This folder will be created in the selected directory, containing the downloaded images. Spaces will be replaced with underscores and the folder created will be all lowercase. Example: query "Apple Juice" will create the folder "apple_juice".',
     },
     {
         label: (
