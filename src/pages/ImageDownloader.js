@@ -20,6 +20,7 @@ export default function ImageDownloader() {
     const navigate = useNavigate();
     const [arrayData, setArrayData] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
     const [folderPath, setFolderPath] = useState("");
     const [isDownloading, setIsDownloading] = useState(false);
     const [downloadProgress, setDownloadProgress] = useState(0);
@@ -53,6 +54,7 @@ export default function ImageDownloader() {
     };
 
     const validateInputs = () => {
+        const illegalCharacterRegex = /[^a-zA-Z0-9 ]/;
         if (
             !inputs.apiKey ||
             !inputs.query ||
@@ -61,6 +63,13 @@ export default function ImageDownloader() {
             folderPath === "" ||
             inputs.newFolderName === ""
         ) {
+            setAlertMessage("Please fill in all required fields.");
+            setShowAlert(true);
+            return false;
+        } else if (illegalCharacterRegex.test(inputs.newFolderName)) {
+            setAlertMessage(
+                "Invalid folder name. Please use only alphanumeric characters and spaces."
+            );
             setShowAlert(true);
             return false;
         }
@@ -84,40 +93,55 @@ export default function ImageDownloader() {
         setInputs({ ...inputs, [name]: newValue });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!validateInputs()) return;
-        setIsFetching(true);
-        const apiKey = inputs.apiKey.trim();
-        const query = inputs.query.trim();
-        const gl = inputs.gl.trim();
-        const hl = inputs.hl.trim();
-        const cx = inputs.cx.trim();
-        const userAgent = inputs.userAgent.trim();
+        console.log(window.api.fetchImageUrls);
         window.api
-            .fetchImageUrls(
-                apiKey,
-                query,
-                inputs.start,
-                inputs.totalNum,
-                gl !== "" ? gl : undefined,
-                hl !== "" ? hl : undefined,
-                cx !== "" ? cx : undefined,
-                userAgent !== "" ? userAgent : undefined
-            )
-            .then((response) => {
-                if (response.length > 0) {
-                    setArrayData(response);
-                    setFetchAcknowledged(undefined);
-                    setFetchProgress(0);
-                } else {
-                    setFetchAcknowledged(true);
-                    setFetchProgress(100);
+            .validateDirectory(folderPath)
+            .then((isValidDirectory) => {
+                if (!isValidDirectory) {
+                    setAlertMessage(
+                        "The selected directory does not exist. Please choose a valid directory."
+                    );
+                    setShowAlert(true);
+                    return;
                 }
-                setIsFetching(false);
+                setIsFetching(true);
+                const apiKey = inputs.apiKey.trim();
+                const query = inputs.query.trim();
+                const gl = inputs.gl.trim();
+                const hl = inputs.hl.trim();
+                const cx = inputs.cx.trim();
+                const userAgent = inputs.userAgent.trim();
+                window.api
+                    .fetchImageUrls(
+                        apiKey,
+                        query,
+                        inputs.start,
+                        inputs.totalNum,
+                        gl !== "" ? gl : undefined,
+                        hl !== "" ? hl : undefined,
+                        cx !== "" ? cx : undefined,
+                        userAgent !== "" ? userAgent : undefined
+                    )
+                    .then((response) => {
+                        if (response.length > 0) {
+                            setArrayData(response);
+                            setFetchAcknowledged(undefined);
+                            setFetchProgress(0);
+                        } else {
+                            setFetchAcknowledged(true);
+                            setFetchProgress(100);
+                        }
+                        setIsFetching(false);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        setIsFetching(false);
+                    });
             })
             .catch((error) => {
                 console.log(error);
-                setIsFetching(false);
             });
         // const dummyData = [
         //     "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -264,7 +288,7 @@ export default function ImageDownloader() {
                 <AlertDialog
                     dialogOpen={showAlert}
                     setDialogOpen={setShowAlert}
-                    dialogMessage="Please fill in all required fields."
+                    dialogMessage={alertMessage}
                     dialogTitle="Invalid Input"
                 />
                 <LoadingBar

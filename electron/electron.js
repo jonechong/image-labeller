@@ -47,3 +47,4 @@ ipcMain.handle("read-image-files", ipcHandlers.readImageFiles);
 ipcMain.handle("delete-image-file", ipcHandlers.deleteImageFile);
 ipcMain.handle("fetch-image-urls", ipcHandlers.fetchImageUrls);
 ipcMain.handle("download-images", ipcHandlers.downloadImages);
+ipcMain.handle("validate-directory", ipcHandlers.validateDirectory);

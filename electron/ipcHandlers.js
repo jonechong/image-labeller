@@ -20,6 +20,10 @@ const readImageFiles = async (event, folderPath) => {
     return imageFiles;
 };
 
+const validateDirectory = async (event, folderPath) => {
+    return fs.existsSync(folderPath);
+};
+
 const openDirectoryDialog = async (event) => {
     // Opens a dialog to select directories only
     const { filePaths } = await dialog.showOpenDialog({
@@ -179,4 +183,5 @@ module.exports = {
     deleteImageFile,
     fetchImageUrls,
     downloadImages,
+    validateDirectory,
 };
