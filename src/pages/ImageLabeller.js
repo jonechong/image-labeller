@@ -29,7 +29,7 @@ export default function ImageLabeller() {
     const [invalidDirectory, setInvalidDirectory] = useState(false);
     const [noImages, setNoImages] = useState(false);
     const [labels, setLabels] = useState(new Set());
-    const [selectedLabels, setSelectedLabels] = useState({});
+    const [selectedLabels, setSelectedLabels] = useState(new Set());
 
     const handleKeyPress = (event) => {
         // Only allow keypress actions if there are images
@@ -58,16 +58,15 @@ export default function ImageLabeller() {
     };
 
     const handleLabelChange = (label, isChecked) => {
-        const updatedSelections = { ...selectedLabels };
+        const updatedLabels = new Set(selectedLabels);
+
         if (isChecked) {
-            if (!updatedSelections[currentImage]) {
-                updatedSelections[currentImage] = new Set();
-            }
-            updatedSelections[currentImage].add(label);
+            updatedLabels.add(label);
         } else {
-            updatedSelections[currentImage]?.delete(label);
+            updatedLabels.delete(label);
         }
-        setSelectedLabels(updatedSelections);
+
+        setSelectedLabels(updatedLabels);
     };
 
     const handleDirectoryChange = (event) => {
@@ -216,9 +215,7 @@ export default function ImageLabeller() {
                             style={{ marginTop: 10 }}
                             labels={labels}
                             setLabels={setLabels}
-                            selectedLabels={
-                                selectedLabels[currentImage] || new Set()
-                            }
+                            selectedLabels={selectedLabels}
                             setSelectedLabels={setSelectedLabels}
                             onLabelChange={handleLabelChange}
                         />
@@ -236,7 +233,6 @@ export default function ImageLabeller() {
                         sx={{ flexGrow: 1 }}
                     />
                 </Box>
-
                 <Box
                     sx={{
                         display: "flex",
