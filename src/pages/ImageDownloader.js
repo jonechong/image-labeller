@@ -245,7 +245,7 @@ export default function ImageDownloader() {
                 </IconButton>
                 <Typography variant="h6">Download Images</Typography>
             </Box>
-            <Box sx={{ width: "80%", margin: "auto", p: 2 }}>
+            <Box sx={{ width: "80%", margin: "auto" }}>
                 <DirectoryBrowser
                     folderPath={folderPath}
                     handleDirectoryChange={handleDirectoryChange}
