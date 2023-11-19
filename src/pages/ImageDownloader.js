@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -41,6 +41,8 @@ export default function ImageDownloader() {
         cx: "",
         userAgent: "",
     });
+    const inputsRef = useRef(inputs);
+    const folderPathRef = useRef(folderPath);
 
     const openDirectoryDialog = async () => {
         const folderPath = await window.api.openDirectoryDialog();
@@ -48,12 +50,11 @@ export default function ImageDownloader() {
             setFolderPath(folderPath);
         }
     };
-
     const handleDirectoryChange = (event) => {
         setFolderPath(event.target.value);
     };
 
-    const validateInputs = () => {
+    const validateInputs = useCallback(() => {
         const illegalCharacterRegex = /[^a-zA-Z0-9 ]/;
         if (
             !inputs.apiKey ||
@@ -74,7 +75,7 @@ export default function ImageDownloader() {
             return false;
         }
         return true;
-    };
+    }, [inputs, folderPath]);
 
     const handleChange = (e) => {
         const { name, value, type } = e.target;
@@ -93,7 +94,7 @@ export default function ImageDownloader() {
         setInputs({ ...inputs, [name]: newValue });
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         if (!validateInputs()) return;
         console.log(window.api.fetchImageUrls);
         window.api
@@ -154,31 +155,37 @@ export default function ImageDownloader() {
         // ];
         // setArrayData(dummyData);
         // setIsFetching(false);
-    };
+    }, [inputs, folderPath, validateInputs]);
 
-    const handleDownloadProgress = (data) => {
-        if (data && typeof data.progress === "number") {
-            setDownloadProgress(Math.round(data.progress * 100));
-            setDownloadStatuses((prevStatuses) => {
-                const newStatuses = [...prevStatuses];
-                newStatuses[data.imageIndex] = data.message;
-                return newStatuses;
-            });
-        }
-    };
-
-    const handleFetchProgress = (data) => {
-        if (data && typeof data.progress === "number") {
-            setFetchProgress(Math.round(data.progress * 100));
-            if (data.message) {
-                setFetchStatuses((prevStatuses) => {
+    const handleDownloadProgress = useCallback(
+        (data) => {
+            if (data && typeof data.progress === "number") {
+                setDownloadProgress(Math.round(data.progress * 100));
+                setDownloadStatuses((prevStatuses) => {
                     const newStatuses = [...prevStatuses];
-                    newStatuses[data.fetchIndex] = data.message;
+                    newStatuses[data.imageIndex] = data.message;
                     return newStatuses;
                 });
             }
-        }
-    };
+        },
+        [setDownloadProgress, setDownloadStatuses]
+    );
+
+    const handleFetchProgress = useCallback(
+        (data) => {
+            if (data && typeof data.progress === "number") {
+                setFetchProgress(Math.round(data.progress * 100));
+                if (data.message) {
+                    setFetchStatuses((prevStatuses) => {
+                        const newStatuses = [...prevStatuses];
+                        newStatuses[data.fetchIndex] = data.message;
+                        return newStatuses;
+                    });
+                }
+            }
+        },
+        [setFetchProgress, setFetchStatuses]
+    );
 
     const downloadButton = getDownloadButton(handleSubmit);
     const imageDownloaderFields = getImageDownloaderFields();
@@ -191,21 +198,27 @@ export default function ImageDownloader() {
             setDownloadStatuses([]);
 
             const downloadDirectory =
-                folderPath +
+                folderPathRef.current +
                 "/" +
-                inputs.newFolderName.trim().replace(/ /g, "_").toLowerCase();
+                inputsRef.current.newFolderName
+                    .trim()
+                    .replace(/ /g, "_")
+                    .toLowerCase();
+
             window.api
                 .downloadImages(
                     arrayData,
                     downloadDirectory,
-                    inputs.start,
-                    inputs.userAgent !== "" ? inputs.userAgent : undefined
+                    inputsRef.current.start,
+                    inputsRef.current.userAgent !== ""
+                        ? inputsRef.current.userAgent
+                        : undefined
                 )
-                .then((response) => {
+                .then(() => {
                     setIsDownloading(false);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.error(error);
                     setIsDownloading(false);
                 });
         }
@@ -222,7 +235,7 @@ export default function ImageDownloader() {
                 handleDownloadProgress
             );
         };
-    }, [isDownloading, downloadAcknowledged]);
+    }, [isDownloading, downloadAcknowledged, handleDownloadProgress]);
 
     useEffect(() => {
         if (isFetching) {
@@ -232,7 +245,7 @@ export default function ImageDownloader() {
         return () => {
             window.api.removeListener("fetch-progress", handleFetchProgress);
         };
-    }, [isFetching, fetchAcknowledged]);
+    }, [isFetching, fetchAcknowledged, handleFetchProgress]);
 
     useEffect(() => {
         setArrayData([]);
@@ -249,6 +262,14 @@ export default function ImageDownloader() {
             setArrayData([]);
         }
     }, [fetchAcknowledged]);
+
+    useEffect(() => {
+        inputsRef.current = inputs;
+    }, [inputs]);
+
+    useEffect(() => {
+        folderPathRef.current = folderPath;
+    }, [folderPath]);
 
     return (
         <>
