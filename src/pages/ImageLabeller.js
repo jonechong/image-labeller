@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -106,6 +106,36 @@ export default function ImageLabeller() {
 
     const handleMoveImage = async () => {
         console.log("Move image");
+        const selectedLabelsArray = Array.from(selectedLabels);
+        for (let i = 0; i < selectedLabelsArray.length; i++) {
+            const basePath = getBasePath(currentImage);
+            const fileName = getFileName(currentImage);
+            const newPath =
+                basePath + "/" + selectedLabelsArray[i] + "/" + fileName;
+            try {
+                await window.api.createFolder(basePath, selectedLabelsArray[i]);
+                await window.api.copyImageToDirectory(
+                    basePath + "/" + fileName,
+                    newPath
+                );
+            } catch (error) {
+                console.error("Error moving image: ", error);
+            }
+        }
+        await handleDeleteImage();
+    };
+
+    const getBasePath = (path) => {
+        const pathSegments = path.split("/");
+        pathSegments.pop();
+        const basePath = pathSegments.join("/");
+        return basePath;
+    };
+
+    const getFileName = (path) => {
+        const pathSegments = path.split("/");
+        const fileName = pathSegments[pathSegments.length - 1];
+        return fileName;
     };
 
     const handleImageLoad = async () => {

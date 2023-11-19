@@ -15,7 +15,11 @@ class DirectoryHandler {
     }
 
     async createFolder(event, currentPath, folderName) {
-        const folderPath = path.join(currentPath, folderName);
+        const cleanCurrentPath = currentPath.startsWith("file://")
+            ? decodeURI(currentPath.replace("file://", ""))
+            : currentPath;
+        const folderPath = path.join(cleanCurrentPath, folderName);
+
         try {
             if (!fs.existsSync(folderPath)) {
                 fs.mkdirSync(folderPath, { recursive: true });
@@ -25,16 +29,6 @@ class DirectoryHandler {
             }
         } catch (error) {
             console.error(`Error creating folder: ${error}`);
-            return { success: false, error: error.message };
-        }
-    }
-
-    async copyFileToDirectory(event, imagePath, destPath) {
-        try {
-            fs.copyFileSync(imagePath, destPath);
-            return { success: true };
-        } catch (error) {
-            console.error(`Error copying file to directory: ${error}`);
             return { success: false, error: error.message };
         }
     }

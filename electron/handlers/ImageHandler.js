@@ -31,6 +31,18 @@ class ImageHandler {
             return { success: false, error: error.message };
         }
     }
+
+    async copyImageToDirectory(event, imagePath, destPath) {
+        const decodedImagePath = decodeURI(imagePath.replace("file://", ""));
+        const decodedDestPath = decodeURI(destPath.replace("file://", ""));
+        try {
+            fs.copyFileSync(decodedImagePath, decodedDestPath);
+            return { success: true };
+        } catch (error) {
+            console.error(`Error copying file to directory: ${error}`);
+            return { success: false, error: error.message };
+        }
+    }
 }
 
 module.exports = ImageHandler;
