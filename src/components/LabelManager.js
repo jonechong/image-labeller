@@ -12,7 +12,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import InfoIcon from "@mui/icons-material/Info";
+import Info from "@mui/icons-material/Info";
 
 const ItemTypes = {
     LABEL: "label",
@@ -127,7 +127,6 @@ export default function LabelManager({
                         value={newLabel}
                         onChange={(e) => setNewLabel(e.target.value)}
                         fullWidth
-                        margin="normal"
                         InputProps={{
                             endAdornment: tooltipMessage && (
                                 <InputAdornment position="end">
@@ -136,9 +135,7 @@ export default function LabelManager({
                                         enterDelay={100}
                                         leaveDelay={200}
                                     >
-                                        <InfoIcon
-                                            style={{ cursor: "pointer" }}
-                                        />
+                                        <Info style={{ cursor: "pointer" }} />
                                     </Tooltip>
                                 </InputAdornment>
                             ),

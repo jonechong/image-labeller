@@ -227,10 +227,8 @@ export default function ImageLabeller() {
                 <Typography variant="h6">Label Images</Typography>
             </Box>
 
-            {/* Show images options if there are images */}
             {currentImage && (
                 <>
-                    {/* Display image index */}
                     <Box textAlign="center" my={2}>
                         <Typography variant="h6">
                             Image {currentIndex + 1} of {images.length}
@@ -246,9 +244,7 @@ export default function ImageLabeller() {
                             alignItems: "flex-start",
                         }}
                     >
-                        {/* Display Image */}
                         <ImageView currentImage={currentImage} />
-                        {/* Checkbox for labels */}
                         <LabelManager
                             style={{ marginTop: 10 }}
                             labels={labels}
@@ -256,10 +252,11 @@ export default function ImageLabeller() {
                             selectedLabels={selectedLabels}
                             setSelectedLabels={setSelectedLabels}
                             onLabelChange={handleLabelChange}
+                            tooltipMessage={
+                                "For each label you select, the image will be copied to each of the selected labels folder. If the folder doesn't exist, the folder will be created."
+                            }
                         />
                     </Box>
-
-                    {/* The following shows image action buttons if there is a current image */}
                 </>
             )}
             <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -288,7 +285,6 @@ export default function ImageLabeller() {
                 </Box>
             )}
 
-            {/* This snackbar shows if there is no more images when user click previous/next */}
             <SnackbarInfoAlert
                 alertOpen={noMoreImages}
                 onClose={handleNoMoreImages}
