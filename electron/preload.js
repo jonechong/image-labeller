@@ -35,13 +35,6 @@ contextBridge.exposeInMainWorld("api", {
     createFolder: (currentPath, folderName) => {
         return ipcRenderer.invoke("create-folder", currentPath, folderName);
     },
-    copyFileToDirectory: (imagePath, destPath) => {
-        return ipcRenderer.invoke(
-            "copy-file-to-directory",
-            imagePath,
-            destPath
-        );
-    },
 
     // image functions
     readImageFiles: (folderPath) => {
@@ -50,6 +43,15 @@ contextBridge.exposeInMainWorld("api", {
     deleteImageFile: (filePath) => {
         return ipcRenderer.invoke("delete-image-file", filePath);
     },
+    copyImageToDirectory: (imagePath, destPath) => {
+        return ipcRenderer.invoke(
+            "copy-image-to-directory",
+            imagePath,
+            destPath
+        );
+    },
+
+    // listener things
     receive: (channel, func) => {
         ipcRenderer.on(channel, (event, ...args) => {
             func(...args);

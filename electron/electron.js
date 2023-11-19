@@ -53,7 +53,6 @@ app.on("activate", function () {
 ipcMain.handle("open-directory-dialog", directoryHandler.openDirectoryDialog);
 ipcMain.handle("validate-directory", directoryHandler.validateDirectory);
 ipcMain.handle("create-folder", directoryHandler.createFolder);
-ipcMain.handle("copy-file-to-directory", directoryHandler.copyFileToDirectory);
 
 //Download Handlers
 ipcMain.handle("fetch-image-urls", downloadHandler.fetchImageUrls);
@@ -62,3 +61,4 @@ ipcMain.handle("download-images", downloadHandler.downloadImages);
 // Image Handlers
 ipcMain.handle("read-image-files", imageHandler.readImageFiles);
 ipcMain.handle("delete-image-file", imageHandler.deleteImageFile);
+ipcMain.handle("copy-image-to-directory", imageHandler.copyImageToDirectory);
