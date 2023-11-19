@@ -9,7 +9,7 @@ export const getLabellerDialogs = (
     {
         open: imagesDeleted,
         setOpen: setImagesDeleted,
-        message: "All images have been deleted!",
+        message: "All images have been moved/deleted!",
         title: "Alert",
     },
     {
