@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -13,45 +13,22 @@ import LabelManager from "../components/LabelManager";
 //Import UI
 import { getLoadImageButton } from "../ui/ImageLabeller/getLoadImageButton";
 import { getImageButtons } from "../ui/ImageLabeller/getImageButtons";
-import { getLabellerDialogs } from "../ui/ImageLabeller/getLabellerDialogs";
 
 // Import icons
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function ImageLabeller() {
     const navigate = useNavigate();
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [alertTitle, setAlertTitle] = useState("");
     const [folderPath, setFolderPath] = useState("");
     const [currentImage, setCurrentImage] = useState(null);
     const [images, setImages] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [noMoreImages, setNoMoreImages] = useState(false);
-    const [imagesDeleted, setImagesDeleted] = useState(false);
-    const [invalidDirectory, setInvalidDirectory] = useState(false);
-    const [noImages, setNoImages] = useState(false);
     const [labels, setLabels] = useState(new Set());
     const [selectedLabels, setSelectedLabels] = useState(new Set());
-
-    const handleKeyPress = (event) => {
-        // Only allow keypress actions if there are images
-        if (images.length > 0) {
-            switch (event.key) {
-                case "ArrowLeft":
-                    showPrevImage();
-                    break;
-                case "ArrowRight":
-                    showNextImage();
-                    break;
-                case "Delete":
-                    handleDeleteImage();
-                    break;
-                case "m":
-                    handleMoveImage();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
 
     const openDirectoryDialog = async () => {
         const folderPath = await window.api.openDirectoryDialog();
@@ -76,7 +53,7 @@ export default function ImageLabeller() {
         setFolderPath(event.target.value);
     };
 
-    const handleDeleteImage = async () => {
+    const handleDeleteImage = useCallback(async () => {
         if (!currentImage) return;
         try {
             const response = await window.api.deleteImageFile(currentImage);
@@ -85,7 +62,11 @@ export default function ImageLabeller() {
                 setImages(newImages);
                 if (newImages.length === 0) {
                     setCurrentImage(null);
-                    setImagesDeleted(true);
+                    showAlertMessage(
+                        true,
+                        "No Images Found",
+                        "There are no images in this directory."
+                    );
                 } else if (currentIndex >= newImages.length) {
                     setCurrentIndex(newImages.length - 1);
                     setCurrentImage(newImages[newImages.length - 1]);
@@ -98,14 +79,21 @@ export default function ImageLabeller() {
         } catch (error) {
             console.error("Error sending delete image IPC message:", error);
         }
-    };
+    }, [currentImage, currentIndex, images]);
 
     const extractFilename = (path) => {
         return path.split("/").pop().split("\\").pop(); // Handles both UNIX and Windows paths
     };
 
-    const handleMoveImage = async () => {
-        console.log("Move image");
+    const handleMoveImage = useCallback(async () => {
+        if (selectedLabels.size === 0) {
+            showAlertMessage(
+                true,
+                "No Labels Selected",
+                "Please select at least one label."
+            );
+            return;
+        }
         const selectedLabelsArray = Array.from(selectedLabels);
         for (let i = 0; i < selectedLabelsArray.length; i++) {
             const basePath = getBasePath(currentImage);
@@ -123,7 +111,7 @@ export default function ImageLabeller() {
             }
         }
         await handleDeleteImage();
-    };
+    }, [currentImage, handleDeleteImage, selectedLabels]);
 
     const getBasePath = (path) => {
         const pathSegments = path.split("/");
@@ -138,15 +126,29 @@ export default function ImageLabeller() {
         return fileName;
     };
 
+    const showAlertMessage = (show, title, message) => {
+        setShowAlert(show);
+        setAlertTitle(title);
+        setAlertMessage(message);
+    };
+
     const handleImageLoad = async () => {
         if (!folderPath) {
-            setInvalidDirectory(true);
+            showAlertMessage(
+                true,
+                "Invalid Directory",
+                "Please input a valid directory first."
+            );
             return;
         }
         try {
             const imageFiles = await window.api.readImageFiles(folderPath);
             if (imageFiles.length === 0) {
-                setNoImages(true);
+                showAlertMessage(
+                    true,
+                    "No Images Found",
+                    "There are no images in this directory."
+                );
                 return;
             }
             setImages(imageFiles);
@@ -154,7 +156,11 @@ export default function ImageLabeller() {
             setCurrentIndex(0);
         } catch (error) {
             console.error("Error reading images: ", error);
-            setInvalidDirectory(true);
+            showAlertMessage(
+                true,
+                "Invalid Directory",
+                "Please input a valid directory first."
+            );
         }
     };
 
@@ -165,32 +171,55 @@ export default function ImageLabeller() {
         setNoMoreImages(false);
     };
 
-    const showNextImage = () => {
+    const showNextImage = useCallback(() => {
         if (currentIndex < images.length - 1) {
             setCurrentIndex(currentIndex + 1);
             setCurrentImage(images[currentIndex + 1]);
         } else {
             setNoMoreImages(true);
         }
-    };
+    }, [currentIndex, images]);
 
-    const showPrevImage = () => {
+    const showPrevImage = useCallback(() => {
         if (currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
             setCurrentImage(images[currentIndex - 1]);
         } else {
             setNoMoreImages(true);
         }
-    };
+    }, [currentIndex, images]);
 
-    const labellerDialogs = getLabellerDialogs(
-        imagesDeleted,
-        invalidDirectory,
-        noImages,
-        setImagesDeleted,
-        setInvalidDirectory,
-        setNoImages
+    const handleKeyPress = useCallback(
+        (event) => {
+            // Only allow keypress actions if there are images
+            if (images.length > 0) {
+                switch (event.key) {
+                    case "ArrowLeft":
+                        showPrevImage();
+                        break;
+                    case "ArrowRight":
+                        showNextImage();
+                        break;
+                    case "Delete":
+                        handleDeleteImage();
+                        break;
+                    case "m":
+                        handleMoveImage();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        },
+        [
+            images,
+            showPrevImage,
+            showNextImage,
+            handleDeleteImage,
+            handleMoveImage,
+        ]
     );
+
     const loadImageButton = getLoadImageButton(handleImageLoad, navigate);
     const imageButtons = getImageButtons(
         showPrevImage,
@@ -206,7 +235,7 @@ export default function ImageLabeller() {
         return () => {
             window.removeEventListener("keydown", handleKeyPress);
         };
-    }, [currentIndex, images]);
+    }, [handleKeyPress]);
 
     return (
         <Box sx={{ padding: 2 }}>
@@ -226,7 +255,6 @@ export default function ImageLabeller() {
                 </IconButton>
                 <Typography variant="h6">Label Images</Typography>
             </Box>
-
             {currentImage && (
                 <>
                     <Box textAlign="center" my={2}>
@@ -252,9 +280,7 @@ export default function ImageLabeller() {
                             selectedLabels={selectedLabels}
                             setSelectedLabels={setSelectedLabels}
                             onLabelChange={handleLabelChange}
-                            tooltipMessage={
-                                "For each label you select, the image will be copied to each of the selected labels folder. If the folder doesn't exist, the folder will be created."
-                            }
+                            tooltipMessage={"Labels for the image"}
                         />
                     </Box>
                 </>
@@ -284,22 +310,18 @@ export default function ImageLabeller() {
                     <ActionButtons buttonsProps={imageButtons} />
                 </Box>
             )}
-
             <SnackbarInfoAlert
                 alertOpen={noMoreImages}
                 onClose={handleNoMoreImages}
                 duration={3000}
                 alertMessage={"No more images."}
             />
-            {labellerDialogs.map((dialog, index) => (
-                <AlertDialog
-                    key={index}
-                    dialogOpen={dialog.open}
-                    setDialogOpen={dialog.setOpen}
-                    dialogMessage={dialog.message}
-                    dialogTitle={dialog.title}
-                />
-            ))}
+            <AlertDialog
+                dialogOpen={showAlert}
+                setDialogOpen={setShowAlert}
+                dialogMessage={alertMessage}
+                dialogTitle={alertTitle}
+            />
         </Box>
     );
 }
