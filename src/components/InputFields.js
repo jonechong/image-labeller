@@ -17,7 +17,7 @@ export default function InputFields({ fields, values, onChange }) {
                     fullWidth
                     margin="normal"
                     InputProps={{
-                        endAdornment: (
+                        endAdornment: field.tooltip && (
                             <InputAdornment position="end">
                                 <Tooltip
                                     title={field.tooltip || ""}
