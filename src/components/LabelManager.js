@@ -6,10 +6,13 @@ import {
     Checkbox,
     FormControlLabel,
     IconButton,
+    Tooltip,
+    InputAdornment,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import InfoIcon from "@mui/icons-material/Info";
 
 const ItemTypes = {
     LABEL: "label",
@@ -75,6 +78,7 @@ export default function LabelManager({
     selectedLabels,
     setSelectedLabels,
     onLabelChange,
+    tooltipMessage,
 }) {
     const [newLabel, setNewLabel] = useState("");
 
@@ -122,6 +126,23 @@ export default function LabelManager({
                         label="New Label"
                         value={newLabel}
                         onChange={(e) => setNewLabel(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                        InputProps={{
+                            endAdornment: tooltipMessage && (
+                                <InputAdornment position="end">
+                                    <Tooltip
+                                        title={tooltipMessage}
+                                        enterDelay={100}
+                                        leaveDelay={200}
+                                    >
+                                        <InfoIcon
+                                            style={{ cursor: "pointer" }}
+                                        />
+                                    </Tooltip>
+                                </InputAdornment>
+                            ),
+                        }}
                     />
                     <Button
                         sx={{ margin: 1 }}
