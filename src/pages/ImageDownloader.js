@@ -15,7 +15,7 @@ import { getImageDownloaderFields } from "../ui/ImageDownloader/getImageDownload
 import { getDownloadButton } from "../ui/ImageDownloader/getDownloadButton";
 
 // Define constants
-const LabelHelperText =
+const DownloadHelperText =
     "This feature uses the Google Custom Search API to download images. You will need to provide an API key and a search engine ID to use this feature. You can get these from the Google Cloud Platform.";
 
 export default function ImageDownloader() {
@@ -269,7 +269,7 @@ export default function ImageDownloader() {
                 navigateFunc={() => {
                     navigate("/");
                 }}
-                tooltip={LabelHelperText}
+                tooltip={DownloadHelperText}
             />
 
             <Box sx={{ width: "80%", margin: "auto" }}>
