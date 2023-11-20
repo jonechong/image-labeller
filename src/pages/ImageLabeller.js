@@ -10,12 +10,19 @@ import ActionButtons from "../components/ActionButtons";
 import DirectoryBrowser from "../components/DirectoryBrowser";
 import LabelManager from "../components/LabelManager";
 
-//Import UI
+// Import UI
 import { getLoadImageButton } from "../ui/ImageLabeller/getLoadImageButton";
 import { getImageButtons } from "../ui/ImageLabeller/getImageButtons";
 
 // Import icons
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+// Import directory functions
+import {
+    getBasePath,
+    getFileName,
+    extractFilename,
+} from "../utils/directoryUtils";
 
 export default function ImageLabeller() {
     const navigate = useNavigate();
@@ -81,10 +88,6 @@ export default function ImageLabeller() {
         }
     }, [currentImage, currentIndex, images]);
 
-    const extractFilename = (path) => {
-        return path.split("/").pop().split("\\").pop(); // Handles both UNIX and Windows paths
-    };
-
     const handleMoveImage = useCallback(async () => {
         if (selectedLabels.size === 0) {
             showAlertMessage(
@@ -112,19 +115,6 @@ export default function ImageLabeller() {
         }
         await handleDeleteImage();
     }, [currentImage, handleDeleteImage, selectedLabels]);
-
-    const getBasePath = (path) => {
-        const pathSegments = path.split("/");
-        pathSegments.pop();
-        const basePath = pathSegments.join("/");
-        return basePath;
-    };
-
-    const getFileName = (path) => {
-        const pathSegments = path.split("/");
-        const fileName = pathSegments[pathSegments.length - 1];
-        return fileName;
-    };
 
     const showAlertMessage = (show, title, message) => {
         setShowAlert(show);
@@ -189,6 +179,14 @@ export default function ImageLabeller() {
         }
     }, [currentIndex, images]);
 
+    const loadImageButton = getLoadImageButton(handleImageLoad, navigate);
+    const imageButtons = getImageButtons(
+        showPrevImage,
+        showNextImage,
+        handleDeleteImage,
+        handleMoveImage
+    );
+
     const handleKeyPress = useCallback(
         (event) => {
             // Only allow keypress actions if there are images
@@ -218,14 +216,6 @@ export default function ImageLabeller() {
             handleDeleteImage,
             handleMoveImage,
         ]
-    );
-
-    const loadImageButton = getLoadImageButton(handleImageLoad, navigate);
-    const imageButtons = getImageButtons(
-        showPrevImage,
-        showNextImage,
-        handleDeleteImage,
-        handleMoveImage
     );
 
     useEffect(() => {
