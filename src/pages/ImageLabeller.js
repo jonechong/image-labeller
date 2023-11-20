@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 // Import components
@@ -7,13 +7,11 @@ import AlertDialog from "../components/AlertDialog";
 import SnackbarInfoAlert from "../components/SnackbarInfoAlert";
 import ImageView from "../components/ImageView";
 import ActionButtons from "../components/ActionButtons";
-import DirectoryBrowser from "../components/DirectoryBrowser";
 import LabelManager from "../components/ImageLabeller/LabelManager";
 import PageHeader from "../components/PageHeader";
 import ImageHeader from "../components/ImageHeader";
 
 // Import UI
-import { getLoadImageButton } from "../ui/ImageLabeller/getLoadImageButton";
 import { getImageButtons } from "../ui/ImageLabeller/getImageButtons";
 
 // Import directory functions
@@ -22,6 +20,7 @@ import {
     getFileName,
     extractFilename,
 } from "../utils/directoryUtils";
+import DirectoryLoader from "../components/ImageLabeller/DirectoryLoader";
 
 // Define constants
 const LabelHelperText =
@@ -182,7 +181,6 @@ export default function ImageLabeller() {
         }
     }, [currentIndex, images]);
 
-    const loadImageButton = getLoadImageButton(handleImageLoad, navigate);
     const imageButtons = getImageButtons(
         showPrevImage,
         showNextImage,
@@ -265,26 +263,12 @@ export default function ImageLabeller() {
                     </Box>
                 </>
             )}
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Box sx={{ width: "50%" }}>
-                    <DirectoryBrowser
-                        folderPath={folderPath}
-                        handleDirectoryChange={handleDirectoryChange}
-                        openDirectoryDialog={openDirectoryDialog}
-                        sx={{ flexGrow: 1 }}
-                    />
-                </Box>
-                <Box
-                    sx={{
-                        display: "flex",
-                        padding: 2,
-                        flexShrink: 0,
-                        alignContent: "center",
-                    }}
-                >
-                    <ActionButtons buttonsProps={loadImageButton} />
-                </Box>
-            </Box>
+            <DirectoryLoader
+                handleImageLoad={handleImageLoad}
+                folderPath={folderPath}
+                handleDirectoryChange={handleDirectoryChange}
+                openDirectoryDialog={openDirectoryDialog}
+            />
             {currentImage && (
                 <Box sx={{ display: "flex", justifyContent: "center" }}>
                     <ActionButtons buttonsProps={imageButtons} />
