@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Box, Typography, IconButton } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 // Import components
@@ -15,15 +15,16 @@ import PageHeader from "../components/PageHeader";
 import { getLoadImageButton } from "../ui/ImageLabeller/getLoadImageButton";
 import { getImageButtons } from "../ui/ImageLabeller/getImageButtons";
 
-// Import icons
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
 // Import directory functions
 import {
     getBasePath,
     getFileName,
     extractFilename,
 } from "../utils/directoryUtils";
+
+// Define constants
+const LabelHelperText =
+    "This feature allows you to label images, you can move images to different folders based on the labels you select. If these folders do not exist, they are created automatically.";
 
 export default function ImageLabeller() {
     const navigate = useNavigate();
@@ -235,6 +236,7 @@ export default function ImageLabeller() {
                 navigateFunc={() => {
                     navigate("/");
                 }}
+                tooltip={LabelHelperText}
             />
             {currentImage && (
                 <>

@@ -1,7 +1,8 @@
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography, Tooltip } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Info from "@mui/icons-material/Info";
 
-export default function PageHeader({ title, navigateFunc }) {
+export default function PageHeader({ title, navigateFunc, tooltip }) {
     return (
         <Box
             sx={{
@@ -13,7 +14,16 @@ export default function PageHeader({ title, navigateFunc }) {
             <IconButton onClick={navigateFunc}>
                 <ArrowBackIcon />
             </IconButton>
-            <Typography variant="h6">{title}</Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography variant="h6">{title}</Typography>
+                {tooltip && (
+                    <Tooltip title={tooltip}>
+                        <IconButton size="small">
+                            <Info fontSize="inherit" />
+                        </IconButton>
+                    </Tooltip>
+                )}
+            </Box>
         </Box>
     );
 }

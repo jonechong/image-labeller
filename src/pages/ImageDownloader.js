@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Box, Typography, IconButton } from "@mui/material";
+import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 // Import components
@@ -14,8 +14,9 @@ import PageHeader from "../components/PageHeader";
 import { getImageDownloaderFields } from "../ui/ImageDownloader/getImageDownloaderFields";
 import { getDownloadButton } from "../ui/ImageDownloader/getDownloadButton";
 
-// Import icons
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+// Define constants
+const LabelHelperText =
+    "This feature uses the Google Custom Search API to download images. You will need to provide an API key and a search engine ID to use this feature. You can get these from the Google Cloud Platform.";
 
 export default function ImageDownloader() {
     const navigate = useNavigate();
@@ -145,17 +146,6 @@ export default function ImageDownloader() {
             .catch((error) => {
                 console.log(error);
             });
-        // const dummyData = [
-        //     "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        //     "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        //     "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        //     "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        //     "httpds://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        //     "httpds://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        //     "https://images.pexels.com/photos/7372338/pexels-photo-7372338.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        // ];
-        // setArrayData(dummyData);
-        // setIsFetching(false);
     }, [inputs, folderPath, validateInputs]);
 
     const handleDownloadProgress = useCallback(
@@ -279,6 +269,7 @@ export default function ImageDownloader() {
                 navigateFunc={() => {
                     navigate("/");
                 }}
+                tooltip={LabelHelperText}
             />
 
             <Box sx={{ width: "80%", margin: "auto" }}>
