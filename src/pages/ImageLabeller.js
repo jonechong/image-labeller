@@ -8,8 +8,9 @@ import SnackbarInfoAlert from "../components/SnackbarInfoAlert";
 import ImageView from "../components/ImageView";
 import ActionButtons from "../components/ActionButtons";
 import DirectoryBrowser from "../components/DirectoryBrowser";
-import LabelManager from "../components/LabelManager";
+import LabelManager from "../components/ImageLabeller/LabelManager";
 import PageHeader from "../components/PageHeader";
+import ImageHeader from "../components/ImageHeader";
 
 // Import UI
 import { getLoadImageButton } from "../ui/ImageLabeller/getLoadImageButton";
@@ -240,14 +241,10 @@ export default function ImageLabeller() {
             />
             {currentImage && (
                 <>
-                    <Box textAlign="center" my={2}>
-                        <Typography variant="h6">
-                            Image {currentIndex + 1} of {images.length}
-                        </Typography>
-                        <Typography>
-                            Filename: {extractFilename(currentImage)}
-                        </Typography>
-                    </Box>
+                    <ImageHeader
+                        header={`Image ${currentIndex + 1} of ${images.length}`}
+                        subheader={`Filename: ${extractFilename(currentImage)}`}
+                    />
                     <Box
                         sx={{
                             display: "flex",

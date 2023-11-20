@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import AlertDialog from "../components/AlertDialog";
 import DirectoryBrowser from "../components/DirectoryBrowser";
 import ActionButtons from "../components/ActionButtons";
-import LoadingBar from "../components/LoadingBarPopup";
+import LoadingBar from "../components/ImageDownloader/LoadingBarPopup";
 import InputFields from "../components/InputFields";
 import PageHeader from "../components/PageHeader";
 
