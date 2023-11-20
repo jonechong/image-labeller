@@ -9,6 +9,7 @@ import ImageView from "../components/ImageView";
 import ActionButtons from "../components/ActionButtons";
 import DirectoryBrowser from "../components/DirectoryBrowser";
 import LabelManager from "../components/LabelManager";
+import PageHeader from "../components/PageHeader";
 
 // Import UI
 import { getLoadImageButton } from "../ui/ImageLabeller/getLoadImageButton";
@@ -229,22 +230,12 @@ export default function ImageLabeller() {
 
     return (
         <Box sx={{ padding: 2 }}>
-            <Box
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
+            <PageHeader
+                title="Label Images"
+                navigateFunc={() => {
+                    navigate("/");
                 }}
-            >
-                <IconButton
-                    onClick={() => {
-                        navigate("/");
-                    }}
-                >
-                    <ArrowBackIcon />
-                </IconButton>
-                <Typography variant="h6">Label Images</Typography>
-            </Box>
+            />
             {currentImage && (
                 <>
                     <Box textAlign="center" my={2}>

@@ -8,6 +8,7 @@ import DirectoryBrowser from "../components/DirectoryBrowser";
 import ActionButtons from "../components/ActionButtons";
 import LoadingBar from "../components/LoadingBarPopup";
 import InputFields from "../components/InputFields";
+import PageHeader from "../components/PageHeader";
 
 // Import UI
 import { getImageDownloaderFields } from "../ui/ImageDownloader/getImageDownloaderFields";
@@ -272,24 +273,14 @@ export default function ImageDownloader() {
     }, [folderPath]);
 
     return (
-        <>
-            <Box
-                sx={{
-                    padding: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
+        <Box sx={{ padding: 2 }}>
+            <PageHeader
+                title={"Download Images"}
+                navigateFunc={() => {
+                    navigate("/");
                 }}
-            >
-                <IconButton
-                    onClick={() => {
-                        navigate("/");
-                    }}
-                >
-                    <ArrowBackIcon />
-                </IconButton>
-                <Typography variant="h6">Download Images</Typography>
-            </Box>
+            />
+
             <Box sx={{ width: "80%", margin: "auto" }}>
                 <DirectoryBrowser
                     folderPath={folderPath}
@@ -331,6 +322,6 @@ export default function ImageDownloader() {
                     setAcknowledgement={setDownloadAcknowledged}
                 />
             </Box>
-        </>
+        </Box>
     );
 }
