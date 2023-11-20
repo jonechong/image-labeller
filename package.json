@@ -22,6 +22,7 @@
         "react-scripts": "5.0.1",
         "sharp": "^0.32.6",
         "trash": "^8.1.1",
+        "use-image": "^1.1.1",
         "web-vitals": "^2.1.4"
     },
     "scripts": {
