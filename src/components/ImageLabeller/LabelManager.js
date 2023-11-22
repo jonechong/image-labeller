@@ -5,14 +5,18 @@ import {
     Button,
     Checkbox,
     FormControlLabel,
+    InputLabel,
+    FormControl,
+    MenuItem,
     IconButton,
     Tooltip,
+    Select,
     InputAdornment,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import Info from "@mui/icons-material/Info";
+import InfoIcon from "@mui/icons-material/Info";
 
 const ItemTypes = {
     LABEL: "label",
@@ -20,6 +24,7 @@ const ItemTypes = {
 
 function DraggableLabel({
     label,
+    labelColor,
     index,
     moveLabel,
     selectedLabels,
@@ -56,15 +61,28 @@ function DraggableLabel({
                 justifyContent: "space-between",
             }}
         >
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={selectedLabels.has(label)}
-                        onChange={(e) => onLabelChange(label, e.target.checked)}
-                    />
-                }
-                label={label}
-            />
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Box
+                    sx={{
+                        width: 15,
+                        height: 15,
+                        backgroundColor: labelColor,
+                        marginRight: 1,
+                        borderRadius: "50%", // Makes the box circular
+                    }}
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={selectedLabels.has(label)}
+                            onChange={(e) =>
+                                onLabelChange(label, e.target.checked)
+                            }
+                        />
+                    }
+                    label={label}
+                />
+            </Box>
             <IconButton onClick={() => onDelete(label)} size="small">
                 <DeleteIcon />
             </IconButton>
@@ -77,10 +95,13 @@ export default function LabelManager({
     setLabels,
     selectedLabels,
     setSelectedLabels,
+    drawingLabel,
+    setDrawingLabel,
+    labelColors,
     onLabelChange,
-    tooltipMessage,
 }) {
     const [newLabel, setNewLabel] = useState("");
+    const tooltipMessage = "Categories for your image";
 
     const addLabel = () => {
         if (newLabel) {
@@ -111,6 +132,10 @@ export default function LabelManager({
         [labels, setLabels]
     );
 
+    const handleDrawingLabelChange = (e) => {
+        setDrawingLabel(e.target.value);
+    };
+
     return (
         <DndProvider backend={HTML5Backend}>
             <Box
@@ -135,7 +160,9 @@ export default function LabelManager({
                                         enterDelay={100}
                                         leaveDelay={200}
                                     >
-                                        <Info style={{ cursor: "pointer" }} />
+                                        <InfoIcon
+                                            style={{ cursor: "pointer" }}
+                                        />
                                     </Tooltip>
                                 </InputAdornment>
                             ),
@@ -148,6 +175,36 @@ export default function LabelManager({
                     >
                         Add
                     </Button>
+                </Box>
+                <Box
+                    sx={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                    }}
+                >
+                    <FormControl sx={{ m: 1, width: "100%" }}>
+                        <InputLabel>Selected Label</InputLabel>
+                        <Select
+                            labelId="label-select-label"
+                            id="label-select"
+                            value={drawingLabel}
+                            label="Selected Label"
+                            onChange={handleDrawingLabelChange}
+                        >
+                            {Array.from(labels).map((label, index) => (
+                                <MenuItem key={index} value={label}>
+                                    {label}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <Tooltip title={"This label is for your drawing"}>
+                        <InfoIcon
+                            fontSize="medium"
+                            style={{ cursor: "pointer" }}
+                        />
+                    </Tooltip>
                 </Box>
                 <Box
                     sx={{
@@ -165,6 +222,7 @@ export default function LabelManager({
                             index={index}
                             moveLabel={moveLabel}
                             selectedLabels={selectedLabels}
+                            labelColor={labelColors[label]}
                             onLabelChange={onLabelChange}
                             onDelete={handleDeleteLabel}
                         />
