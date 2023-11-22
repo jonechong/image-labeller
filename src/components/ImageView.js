@@ -21,7 +21,18 @@ export default function ImageView({
 
     const createNewBox = () => {
         if (newBox) {
-            setBoxes([...boxes, { ...newBox, label: drawingLabel }]);
+            let { x, y, width, height } = newBox;
+
+            if (width < 0) {
+                x = x + width; // Adjust x-coordinate to the left
+                width = Math.abs(width);
+            }
+            if (height < 0) {
+                y = y + height; // Adjust y-coordinate upwards
+                height = Math.abs(height);
+            }
+
+            setBoxes([...boxes, { x, y, width, height, label: drawingLabel }]);
             setNewBox(null);
         }
     };
@@ -51,13 +62,13 @@ export default function ImageView({
             return;
         }
         const stage = e.target.getStage();
-        const { x, y } = stage.getPointerPosition();
-        const updatedBox = {
-            ...newBox,
-            width: x - newBox.x,
-            height: y - newBox.y,
-        };
-        setNewBox(updatedBox);
+        const pointerPosition = stage.getPointerPosition();
+
+        // Calculate the width and height based on the pointer position
+        const width = pointerPosition.x - newBox.x;
+        const height = pointerPosition.y - newBox.y;
+
+        setNewBox({ ...newBox, width: width, height: height });
     };
 
     const handleRightClick = (e) => {
