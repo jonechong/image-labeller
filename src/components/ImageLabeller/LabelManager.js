@@ -120,6 +120,9 @@ export default function LabelManager({
             updatedSelectedLabels.delete(labelToDelete);
             setSelectedLabels(updatedSelectedLabels);
         }
+        if (drawingLabel == labelToDelete) {
+            setDrawingLabel("");
+        }
     };
 
     const moveLabel = useCallback(
