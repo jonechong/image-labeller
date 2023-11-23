@@ -246,6 +246,12 @@ export default function ImageLabeller() {
         setLabelColors(newLabelColors);
     }, [labels]);
 
+    useEffect(() => {
+        console.log("Boxes changed:", boxes);
+    }, [boxes]);
+
+    useEffect(() => {}, []);
+
     return (
         <Box sx={{ padding: 2 }}>
             <PageHeader
@@ -260,6 +266,9 @@ export default function ImageLabeller() {
                     <ImageHeader
                         header={`Image ${currentIndex + 1} of ${images.length}`}
                         subheader={`Filename: ${extractFilename(currentImage)}`}
+                        tooltipMessage={
+                            "Select a label and click on the image to draw a bounding box."
+                        }
                     />
                     <Box
                         sx={{

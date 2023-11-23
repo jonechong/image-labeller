@@ -1,19 +1,30 @@
 import { Box, Typography } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
+import InfoIcon from "@mui/icons-material/Info";
 
-export default function ImageHeader({ header, subheader }) {
+export default function ImageHeader({ header, subheader, tooltipMessage }) {
     return (
-        <Box textAlign="center" my={2}>
-            <Typography
-                variant="h6"
+        <Box textAlign="center" my={2} sx={{ justifyContent: "center" }}>
+            <Box
                 sx={{
-                    mx: "25%",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
                 }}
             >
-                {header}
-            </Typography>
+                <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
+                    {header}
+                </Typography>
+                {tooltipMessage && (
+                    <Tooltip title={tooltipMessage}>
+                        <InfoIcon
+                            fontSize="medium"
+                            style={{ cursor: "pointer" }}
+                        />
+                    </Tooltip>
+                )}
+            </Box>
             <Typography
                 sx={{
                     mx: "10%",
