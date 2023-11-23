@@ -22,6 +22,9 @@ import {
 } from "../utils/directoryUtils";
 import DirectoryLoader from "../components/ImageLabeller/DirectoryLoader";
 
+// Import colour generation function
+import { generateColor } from "../utils/colors";
+
 // Define constants
 const LabelHelperText =
     "This feature allows you to label images, you can move images to different folders based on the labels you select. If these folders do not exist, they are created automatically.";
@@ -38,6 +41,9 @@ export default function ImageLabeller() {
     const [noMoreImages, setNoMoreImages] = useState(false);
     const [labels, setLabels] = useState(new Set());
     const [selectedLabels, setSelectedLabels] = useState(new Set());
+    const [labelColors, setLabelColors] = useState({});
+    const [drawingLabel, setDrawingLabel] = useState("");
+    const [boxes, setBoxes] = useState([]);
 
     const openDirectoryDialog = async () => {
         const folderPath = await window.api.openDirectoryDialog();
@@ -228,6 +234,18 @@ export default function ImageLabeller() {
         };
     }, [handleKeyPress]);
 
+    useEffect(() => {
+        setBoxes([]);
+    }, [currentIndex, images]);
+
+    useEffect(() => {
+        const newLabelColors = {};
+        Array.from(labels).forEach((label, index) => {
+            newLabelColors[label] = generateColor(index);
+        });
+        setLabelColors(newLabelColors);
+    }, [labels]);
+
     return (
         <Box sx={{ padding: 2 }}>
             <PageHeader
@@ -250,15 +268,24 @@ export default function ImageLabeller() {
                             alignItems: "flex-start",
                         }}
                     >
-                        <ImageView currentImage={currentImage} />
+                        <ImageView
+                            currentImage={currentImage}
+                            boxes={boxes}
+                            setBoxes={setBoxes}
+                            labels={labels}
+                            drawingLabel={drawingLabel}
+                            labelColors={labelColors}
+                        />
                         <LabelManager
                             style={{ marginTop: 10 }}
                             labels={labels}
+                            labelColors={labelColors}
                             setLabels={setLabels}
                             selectedLabels={selectedLabels}
                             setSelectedLabels={setSelectedLabels}
+                            drawingLabel={drawingLabel}
+                            setDrawingLabel={setDrawingLabel}
                             onLabelChange={handleLabelChange}
-                            tooltipMessage={"Labels for the image"}
                         />
                     </Box>
                 </>
