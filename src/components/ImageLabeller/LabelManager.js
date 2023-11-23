@@ -120,7 +120,7 @@ export default function LabelManager({
             updatedSelectedLabels.delete(labelToDelete);
             setSelectedLabels(updatedSelectedLabels);
         }
-        if (drawingLabel == labelToDelete) {
+        if (drawingLabel === labelToDelete) {
             setDrawingLabel("");
         }
     };
@@ -149,36 +149,6 @@ export default function LabelManager({
                     maxHeight: "60vh",
                 }}
             >
-                <Box sx={{ display: "flex", gap: 1, paddingLeft: 1 }}>
-                    <TextField
-                        label="New Label"
-                        value={newLabel}
-                        onChange={(e) => setNewLabel(e.target.value)}
-                        fullWidth
-                        InputProps={{
-                            endAdornment: tooltipMessage && (
-                                <InputAdornment position="end">
-                                    <Tooltip
-                                        title={tooltipMessage}
-                                        enterDelay={100}
-                                        leaveDelay={200}
-                                    >
-                                        <InfoIcon
-                                            style={{ cursor: "pointer" }}
-                                        />
-                                    </Tooltip>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                    <Button
-                        sx={{ margin: 1 }}
-                        onClick={addLabel}
-                        variant="contained"
-                    >
-                        Add
-                    </Button>
-                </Box>
                 <Box
                     sx={{
                         width: "100%",
@@ -208,6 +178,36 @@ export default function LabelManager({
                             style={{ cursor: "pointer" }}
                         />
                     </Tooltip>
+                </Box>
+                <Box sx={{ display: "flex", gap: 1, paddingLeft: 1 }}>
+                    <TextField
+                        label="New Label"
+                        value={newLabel}
+                        onChange={(e) => setNewLabel(e.target.value)}
+                        fullWidth
+                        InputProps={{
+                            endAdornment: tooltipMessage && (
+                                <InputAdornment position="end">
+                                    <Tooltip
+                                        title={tooltipMessage}
+                                        enterDelay={100}
+                                        leaveDelay={200}
+                                    >
+                                        <InfoIcon
+                                            style={{ cursor: "pointer" }}
+                                        />
+                                    </Tooltip>
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                    <Button
+                        sx={{ margin: 1 }}
+                        onClick={addLabel}
+                        variant="contained"
+                    >
+                        Add
+                    </Button>
                 </Box>
                 <Box
                     sx={{
