@@ -13,7 +13,7 @@ export default function ImageHeader({ header, subheader, tooltipMessage }) {
                     justifyContent: "center",
                 }}
             >
-                <Typography variant="h6" sx={{ whiteSpace: "nowrap" }}>
+                <Typography variant="h6" sx={{ whiteSpace: "nowrap", mx: 1 }}>
                     {header}
                 </Typography>
                 {tooltipMessage && (
