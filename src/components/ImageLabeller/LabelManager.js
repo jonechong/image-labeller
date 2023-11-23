@@ -164,6 +164,7 @@ export default function LabelManager({
                             value={drawingLabel}
                             label="Selected Label"
                             onChange={handleDrawingLabelChange}
+                            disabled={labels.size === 0}
                         >
                             {Array.from(labels).map((label, index) => (
                                 <MenuItem key={index} value={label}>
@@ -174,6 +175,7 @@ export default function LabelManager({
                     </FormControl>
                     <Tooltip title={"This label is for your drawing"}>
                         <InfoIcon
+                            color="action"
                             fontSize="medium"
                             style={{ cursor: "pointer" }}
                         />
@@ -194,6 +196,7 @@ export default function LabelManager({
                                         leaveDelay={200}
                                     >
                                         <InfoIcon
+                                            color="action"
                                             style={{ cursor: "pointer" }}
                                         />
                                     </Tooltip>
