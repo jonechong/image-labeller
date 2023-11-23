@@ -24,15 +24,24 @@ export default function ImageView({
             let { x, y, width, height } = newBox;
 
             if (width < 0) {
-                x = x + width; // Adjust x-coordinate to the left
+                x = x + width;
                 width = Math.abs(width);
             }
             if (height < 0) {
-                y = y + height; // Adjust y-coordinate upwards
+                y = y + height;
                 height = Math.abs(height);
             }
 
-            setBoxes([...boxes, { x, y, width, height, label: drawingLabel }]);
+            const newBoxWithImage = {
+                x,
+                y,
+                width,
+                height,
+                label: drawingLabel,
+                image: currentImage,
+            };
+
+            setBoxes([...boxes, newBoxWithImage]);
             setNewBox(null);
         }
     };
