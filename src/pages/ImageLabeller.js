@@ -241,7 +241,7 @@ export default function ImageLabeller() {
     useEffect(() => {
         const newLabelColors = {};
         Array.from(labels).forEach((label, index) => {
-            newLabelColors[label] = generateColor(index);
+            newLabelColors[label] = generateColor(index, 90, 65);
         });
         setLabelColors(newLabelColors);
     }, [labels]);
