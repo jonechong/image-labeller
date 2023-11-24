@@ -35,7 +35,7 @@ export default function ImageView({
                 y,
                 width,
                 height,
-                label: drawingLabel,
+                label: drawingLabel.toLowerCase().trim().replace(/\s+/g, "_"),
                 image: currentImage,
             };
 
