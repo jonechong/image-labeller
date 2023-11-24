@@ -142,6 +142,34 @@ export default function ImageLabeller() {
         await handleDeleteImage();
     }, [currentImage, handleDeleteImage, selectedLabels]);
 
+    const handleLabelImage = async () => {
+        // Check if there are no bounding boxes drawn
+        if (boxes.length === 0) {
+            showAlertMessage(
+                true,
+                "No Labels Drawn",
+                "Please draw labels on the image before saving."
+            );
+            return;
+        }
+
+        const folderName = getBasePath(currentImage);
+        try {
+            const response = await window.api.processToCOCOFormat(
+                boxes,
+                folderName
+            );
+            if (response.success) {
+                addSnackbarAlert("Image labels saved successfully.", "success");
+            } else {
+                addSnackbarAlert("Failed to save image labels.", "error");
+            }
+        } catch (error) {
+            console.error("Error in handleLabelImage:", error);
+            addSnackbarAlert("Error processing image labels.", "error");
+        }
+    };
+
     const showAlertMessage = (show, title, message) => {
         setShowAlert(show);
         setAlertTitle(title);
@@ -202,7 +230,8 @@ export default function ImageLabeller() {
         showPrevImage,
         showNextImage,
         handleDeleteImage,
-        handleMoveImage
+        handleMoveImage,
+        handleLabelImage
     );
 
     const handleKeyPress = useCallback(
