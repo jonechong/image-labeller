@@ -9,12 +9,14 @@ export const getImageButtons = (
         label: "Previous Image",
         action: showPrevImage,
         variant: "contained",
+        color: "secondary",
         tooltip: "Press ← arrow key for previous image",
     },
     {
         label: "Next Image",
         action: showNextImage,
         variant: "contained",
+        color: "secondary",
         tooltip: "Press → arrow key for next image",
     },
     {
