@@ -2,7 +2,8 @@ export const getImageButtons = (
     showPrevImage,
     showNextImage,
     handleDeleteImage,
-    handleMoveImage
+    handleMoveImage,
+    handleLabelImage
 ) => [
     {
         label: "Previous Image",
@@ -29,5 +30,12 @@ export const getImageButtons = (
         variant: "contained",
         color: "secondary",
         tooltip: "Press M key to move image",
+    },
+    {
+        label: "Label Image",
+        action: handleLabelImage,
+        variant: "contained",
+        color: "secondary",
+        tooltip: "Press L key to label image",
     },
 ];
