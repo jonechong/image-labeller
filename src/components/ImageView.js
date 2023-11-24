@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Stage, Layer, Image, Rect } from "react-konva";
 import useImage from "use-image";
 import { Card } from "@mui/material";
-import SnackbarInfoAlert from "./SnackbarInfoAlert";
 
 export default function ImageView({
     currentImage,
@@ -10,12 +9,11 @@ export default function ImageView({
     setBoxes,
     labelColors,
     drawingLabel,
+    addSnackbarAlert,
 }) {
     const [image] = useImage(currentImage);
     const [newBox, setNewBox] = useState(null);
     const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("");
 
     const cardRef = useRef(null);
 
@@ -54,8 +52,10 @@ export default function ImageView({
     const handleMouseDown = (e) => {
         if (!drawingLabel) {
             // No label selected, show alert
-            setAlertMessage("Please select a label before drawing.");
-            setShowAlert(true);
+            addSnackbarAlert(
+                "Please select a label before drawing.",
+                "warning"
+            );
             return;
         }
 
@@ -197,17 +197,6 @@ export default function ImageView({
                     </Layer>
                 </Stage>
             </Card>
-            <SnackbarInfoAlert
-                alertOpen={showAlert}
-                onClose={(event, reason) => {
-                    if (reason === "clickaway") {
-                        return;
-                    }
-                    setShowAlert(false);
-                }}
-                duration={3000}
-                alertMessage={alertMessage}
-            />
         </>
     );
 }

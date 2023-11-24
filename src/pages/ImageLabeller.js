@@ -31,6 +31,7 @@ const LabelHelperText =
 
 export default function ImageLabeller() {
     const navigate = useNavigate();
+    const [snackbarAlerts, setSnackbarAlerts] = useState([]);
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertTitle, setAlertTitle] = useState("");
@@ -38,12 +39,29 @@ export default function ImageLabeller() {
     const [currentImage, setCurrentImage] = useState(null);
     const [images, setImages] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [noMoreImages, setNoMoreImages] = useState(false);
     const [labels, setLabels] = useState(new Set());
     const [selectedLabels, setSelectedLabels] = useState(new Set());
     const [labelColors, setLabelColors] = useState({});
     const [drawingLabel, setDrawingLabel] = useState("");
     const [boxes, setBoxes] = useState([]);
+
+    const addSnackbarAlert = useCallback(
+        (message, severity = "info", duration = 3000) => {
+            const key = new Date().getTime();
+            const newAlert = { key, open: true, message, duration, severity };
+
+            setSnackbarAlerts([{ ...newAlert }]);
+        },
+        []
+    );
+
+    const closeSnackbarAlert = useCallback((key) => {
+        setSnackbarAlerts((prevAlerts) =>
+            prevAlerts.map((alert) =>
+                alert.key === key ? { ...alert, open: false } : alert
+            )
+        );
+    }, []);
 
     const openDirectoryDialog = async () => {
         const folderPath = await window.api.openDirectoryDialog();
@@ -162,30 +180,23 @@ export default function ImageLabeller() {
         }
     };
 
-    const handleNoMoreImages = (event, reason) => {
-        if (reason === "clickaway") {
-            return;
-        }
-        setNoMoreImages(false);
-    };
-
     const showNextImage = useCallback(() => {
         if (currentIndex < images.length - 1) {
             setCurrentIndex(currentIndex + 1);
             setCurrentImage(images[currentIndex + 1]);
         } else {
-            setNoMoreImages(true);
+            addSnackbarAlert("No more images.");
         }
-    }, [currentIndex, images]);
+    }, [currentIndex, images, addSnackbarAlert]);
 
     const showPrevImage = useCallback(() => {
         if (currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
             setCurrentImage(images[currentIndex - 1]);
         } else {
-            setNoMoreImages(true);
+            addSnackbarAlert("No more images.");
         }
-    }, [currentIndex, images]);
+    }, [currentIndex, images, addSnackbarAlert]);
 
     const imageButtons = getImageButtons(
         showPrevImage,
@@ -284,6 +295,7 @@ export default function ImageLabeller() {
                             labels={labels}
                             drawingLabel={drawingLabel}
                             labelColors={labelColors}
+                            addSnackbarAlert={addSnackbarAlert}
                         />
                         <LabelManager
                             style={{ marginTop: 10 }}
@@ -310,12 +322,16 @@ export default function ImageLabeller() {
                     <ActionButtons buttonsProps={imageButtons} />
                 </Box>
             )}
-            <SnackbarInfoAlert
-                alertOpen={noMoreImages}
-                onClose={handleNoMoreImages}
-                duration={3000}
-                alertMessage={"No more images."}
-            />
+            {snackbarAlerts.map((alert, index) => (
+                <SnackbarInfoAlert
+                    key={alert.key}
+                    alertOpen={alert.open}
+                    onClose={() => closeSnackbarAlert(alert.key)}
+                    duration={alert.duration}
+                    alertMessage={alert.message}
+                    severity={alert.severity}
+                />
+            ))}
             <AlertDialog
                 dialogOpen={showAlert}
                 setDialogOpen={setShowAlert}
