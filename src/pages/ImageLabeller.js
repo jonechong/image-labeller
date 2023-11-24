@@ -281,10 +281,12 @@ export default function ImageLabeller() {
     useEffect(() => {
         const newLabelColors = {};
         Array.from(labels).forEach((label, index) => {
-            newLabelColors[label] = generateColor(index, 90, 65);
+            const formattedLabel = label.toLowerCase().trim().replace(/\s+/g, '_');
+            newLabelColors[formattedLabel] = generateColor(index, 90, 65);
         });
         setLabelColors(newLabelColors);
     }, [labels]);
+    
 
     useEffect(() => {
         console.log("Boxes changed:", boxes);
@@ -327,7 +329,6 @@ export default function ImageLabeller() {
                             addSnackbarAlert={addSnackbarAlert}
                         />
                         <LabelManager
-                            style={{ marginTop: 10 }}
                             labels={labels}
                             labelColors={labelColors}
                             setLabels={setLabels}
@@ -336,6 +337,7 @@ export default function ImageLabeller() {
                             drawingLabel={drawingLabel}
                             setDrawingLabel={setDrawingLabel}
                             onLabelChange={handleLabelChange}
+                            addSnackbarAlert={addSnackbarAlert}
                         />
                     </Box>
                 </>

@@ -169,7 +169,12 @@ export default function ImageView({
                             height={stageSize.height}
                         />
                         {boxes.map((box, i) => {
-                            const color = labelColors[box.label] || "black";
+                            const formattedLabel = box.label
+                                .toLowerCase()
+                                .trim()
+                                .replace(/\s+/g, "_");
+                            const color =
+                                labelColors[formattedLabel] || "black";
                             return (
                                 <Rect
                                     key={i}
@@ -183,6 +188,7 @@ export default function ImageView({
                                 />
                             );
                         })}
+
                         {newBox && (
                             <Rect
                                 x={newBox.x}
@@ -190,7 +196,14 @@ export default function ImageView({
                                 width={newBox.width}
                                 height={newBox.height}
                                 fillEnabled={false}
-                                stroke={labelColors[drawingLabel] || "black"}
+                                stroke={
+                                    labelColors[
+                                        drawingLabel
+                                            .toLowerCase()
+                                            .trim()
+                                            .replace(/\s+/g, "_")
+                                    ] || "black"
+                                }
                                 strokeWidth={2}
                             />
                         )}

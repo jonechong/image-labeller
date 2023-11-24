@@ -24,13 +24,16 @@ const ItemTypes = {
 
 function DraggableLabel({
     label,
-    labelColor,
+    labelColors,
     index,
     moveLabel,
     selectedLabels,
     onLabelChange,
     onDelete,
 }) {
+    const formattedLabel = label.toLowerCase().trim().replace(/\s+/g, "_");
+    const color = labelColors[formattedLabel];
+
     const [, drag] = useDrag(
         () => ({
             type: ItemTypes.LABEL,
@@ -66,9 +69,9 @@ function DraggableLabel({
                     sx={{
                         width: 15,
                         height: 15,
-                        backgroundColor: labelColor,
+                        backgroundColor: color,
                         marginRight: 1,
-                        borderRadius: "50%", // Makes the box circular
+                        borderRadius: "50%",
                     }}
                 />
                 <FormControlLabel
@@ -99,15 +102,36 @@ export default function LabelManager({
     setDrawingLabel,
     labelColors,
     onLabelChange,
+    addSnackbarAlert,
 }) {
     const [newLabel, setNewLabel] = useState("");
     const tooltipMessage = "Categories for your image";
 
     const addLabel = () => {
-        if (newLabel) {
-            setLabels(new Set(labels).add(newLabel));
-            setNewLabel("");
+        const trimmedLabel = newLabel.trim();
+        const isAlphanumeric = /^[a-z0-9 ]+$/i.test(trimmedLabel);
+
+        // Check for alphanumeric and non-empty
+        if (!isAlphanumeric || trimmedLabel === "") {
+            addSnackbarAlert(
+                "Invalid label. Only alphanumeric characters and spaces are allowed.",
+                "error"
+            );
+            return;
         }
+
+        // Check for duplicates (case-insensitive)
+        const labelExists = Array.from(labels).some(
+            (label) => label.toLowerCase() === trimmedLabel.toLowerCase()
+        );
+        if (labelExists) {
+            addSnackbarAlert("Label already exists.", "error");
+            return;
+        }
+
+        // Add the label
+        setLabels(new Set(labels).add(trimmedLabel));
+        setNewLabel("");
     };
 
     const handleDeleteLabel = (labelToDelete) => {
@@ -228,7 +252,7 @@ export default function LabelManager({
                             index={index}
                             moveLabel={moveLabel}
                             selectedLabels={selectedLabels}
-                            labelColor={labelColors[label]}
+                            labelColors={labelColors}
                             onLabelChange={onLabelChange}
                             onDelete={handleDeleteLabel}
                         />
