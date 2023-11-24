@@ -152,7 +152,6 @@ export default function ImageLabeller() {
             );
             return;
         }
-
         const folderName = getBasePath(currentImage);
         try {
             const response = await window.api.processToCOCOFormat(
@@ -251,6 +250,9 @@ export default function ImageLabeller() {
                     case "m":
                         handleMoveImage();
                         break;
+                    case "l":
+                        handleLabelImage();
+                        break;
                     default:
                         break;
                 }
@@ -289,10 +291,6 @@ export default function ImageLabeller() {
         });
         setLabelColors(newLabelColors);
     }, [labels]);
-
-    useEffect(() => {
-        console.log("Boxes changed:", boxes);
-    }, [boxes]);
 
     useEffect(() => {
         const existingLabels = new Set(
