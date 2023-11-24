@@ -51,7 +51,11 @@ contextBridge.exposeInMainWorld("api", {
         );
     },
     processToCOCOFormat: (boundingBoxes, imageDimensions) => {
-        return ipcRenderer.invoke("process-to-coco-format", boundingBoxes, imageDimensions);
+        return ipcRenderer.invoke(
+            "process-to-coco-format",
+            boundingBoxes,
+            imageDimensions
+        );
     },
 
     // listener things

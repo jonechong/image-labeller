@@ -65,34 +65,50 @@ class ImageHandler {
 
     // Function to process bounding box data to COCO format
     processToCOCOFormat = async (boundingBoxData, folderName) => {
-        const cocoData = {
-            images: [],
-            annotations: [],
-            categories: [],
-        };
+        const decodedFolderName = decodeURI(folderName.replace("file://", ""));
+        const filename = `${decodedFolderName.toLowerCase()}.json`;
+        const filePath = path.join(folderName, filename);
 
-        const categoryMap = {};
+        let cocoData;
+        let categoryMap = {};
         let categoryIdCounter = 1;
         let annotationIdCounter = 1;
 
+        // Check if the JSON file exists and read it
+        if (fs.existsSync(filePath)) {
+            cocoData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+
+            // Initialize counters and category map from existing data
+            cocoData.categories.forEach((cat) => {
+                categoryMap[cat.name] = cat.id;
+                categoryIdCounter = Math.max(cat.id + 1, categoryIdCounter);
+            });
+
+            cocoData.annotations.forEach((ann) => {
+                annotationIdCounter = Math.max(ann.id + 1, annotationIdCounter);
+            });
+        } else {
+            // Initialize a new COCO data structure
+            cocoData = { images: [], annotations: [], categories: [] };
+        }
+
+        // Process each bounding box data
         for (const data of boundingBoxData) {
             const { height, width, x, y, label, image } = data;
-            const imageId = generateImageId(image);
+            const imageId = this.generateImageId(image);
 
-            // Check if image is already processed
+            // Add image to cocoData if not already present
             if (!cocoData.images.some((img) => img.id === imageId)) {
-                // Obtain image dimensions
-                const { width: imgWidth, height: imgHeight } =
-                    await getImageDimensions(image);
-
+                const imgDimensions = await this.getImageDimensions(image);
                 cocoData.images.push({
                     id: imageId,
                     file_name: path.basename(image),
-                    width: imgWidth,
-                    height: imgHeight,
+                    width: imgDimensions.width,
+                    height: imgDimensions.height,
                 });
             }
 
+            // Add category to cocoData if not already present
             if (!categoryMap[label]) {
                 categoryMap[label] = categoryIdCounter++;
                 cocoData.categories.push({
@@ -101,6 +117,7 @@ class ImageHandler {
                 });
             }
 
+            // Add annotation to cocoData
             cocoData.annotations.push({
                 id: annotationIdCounter++,
                 image_id: imageId,
@@ -109,9 +126,7 @@ class ImageHandler {
             });
         }
 
-        const filename = `${folderName.toLowerCase()}.json`;
-        const filePath = path.join(folderName, filename);
-
+        // Write updated COCO data back to the file
         try {
             fs.writeFileSync(filePath, JSON.stringify(cocoData, null, 2));
             console.log(`COCO data written to ${filePath}`);
