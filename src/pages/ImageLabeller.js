@@ -142,7 +142,7 @@ export default function ImageLabeller() {
         await handleDeleteImage();
     }, [currentImage, handleDeleteImage, selectedLabels]);
 
-    const handleLabelImage = async () => {
+    const handleLabelImage = useCallback(async () => {
         // Check if there are no bounding boxes drawn
         if (boxes.length === 0) {
             showAlertMessage(
@@ -167,7 +167,7 @@ export default function ImageLabeller() {
             console.error("Error in handleLabelImage:", error);
             addSnackbarAlert("Error processing image labels.", "error");
         }
-    };
+    }, [addSnackbarAlert, boxes, currentImage]);
 
     const showAlertMessage = (show, title, message) => {
         setShowAlert(show);
@@ -264,6 +264,7 @@ export default function ImageLabeller() {
             showNextImage,
             handleDeleteImage,
             handleMoveImage,
+            handleLabelImage,
         ]
     );
 
