@@ -62,3 +62,4 @@ ipcMain.handle("download-images", downloadHandler.downloadImages);
 ipcMain.handle("read-image-files", imageHandler.readImageFiles);
 ipcMain.handle("delete-image-file", imageHandler.deleteImageFile);
 ipcMain.handle("copy-image-to-directory", imageHandler.copyImageToDirectory);
+ipcMain.handle("process-to-coco-format", imageHandler.processToCOCOFormat);

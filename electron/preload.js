@@ -50,6 +50,9 @@ contextBridge.exposeInMainWorld("api", {
             destPath
         );
     },
+    processToCOCOFormat: (boundingBoxes, imageDimensions) => {
+        return ipcRenderer.invoke("process-to-coco-format", boundingBoxes, imageDimensions);
+    },
 
     // listener things
     receive: (channel, func) => {
