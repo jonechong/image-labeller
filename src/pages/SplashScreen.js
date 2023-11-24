@@ -21,7 +21,7 @@ export default function SplashScreen({ onOptionSelect }) {
             }}
         >
             <Typography variant="h4" gutterBottom sx={{ fontWeight: "bold" }}>
-                Eymage
+                Eyemage
             </Typography>
             <Typography variant="subtitle1" sx={{ mb: theme.spacing(3) }}>
                 Best image dataset creation tool this world's ever seen
