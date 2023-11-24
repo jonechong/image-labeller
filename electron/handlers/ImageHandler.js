@@ -64,10 +64,11 @@ class ImageHandler {
     };
 
     // Function to process bounding box data to COCO format
-    processToCOCOFormat = async (boundingBoxData, folderName) => {
-        const decodedFolderName = decodeURI(folderName.replace("file://", ""));
-        const filename = `${decodedFolderName.toLowerCase()}.json`;
-        const filePath = path.join(folderName, filename);
+    processToCOCOFormat = async (event, boundingBoxData, folderPath) => {
+        const decodedFolderPath = decodeURI(folderPath.replace("file://", ""));
+        const folderName = path.basename(decodedFolderPath).toLowerCase();
+        const filename = `${folderName}.json`;
+        const filePath = path.join(decodedFolderPath, filename);
 
         let cocoData;
         let categoryMap = {};
@@ -99,7 +100,12 @@ class ImageHandler {
 
             // Add image to cocoData if not already present
             if (!cocoData.images.some((img) => img.id === imageId)) {
-                const imgDimensions = await this.getImageDimensions(image);
+                const decodedImagePath = decodeURI(
+                    image.replace("file://", "")
+                );
+                const imgDimensions = await this.getImageDimensions(
+                    decodedImagePath
+                );
                 cocoData.images.push({
                     id: imageId,
                     file_name: path.basename(image),
