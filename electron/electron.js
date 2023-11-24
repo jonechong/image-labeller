@@ -30,6 +30,8 @@ function createWindow() {
         : `file://${path.join(__dirname, "../build/index.html")}`; // Prod URL
     mainWindow.loadURL(startUrl);
 
+    mainWindow.maximize();
+
     mainWindow.on("closed", function () {
         mainWindow = null;
     });
