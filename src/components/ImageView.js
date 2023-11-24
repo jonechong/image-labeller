@@ -17,6 +17,10 @@ export default function ImageView({
 
     const cardRef = useRef(null);
 
+    const formatLabel = (label) => {
+        return label.toLowerCase().trim().replace(/\s+/g, "_");
+    };
+
     const createNewBox = () => {
         if (newBox) {
             let { x, y, width, height } = newBox;
@@ -50,19 +54,24 @@ export default function ImageView({
 
     // mouse handlers
     const handleMouseDown = (e) => {
-        if (!drawingLabel) {
-            // No label selected, show alert
-            addSnackbarAlert(
-                "Please select a label before drawing.",
-                "warning"
-            );
-            return;
-        }
-
         if (e.evt.button === 0) {
+            if (!drawingLabel) {
+                // No label selected, show alert
+                addSnackbarAlert(
+                    "Please select a label before drawing.",
+                    "warning"
+                );
+                return;
+            }
             // Proceed with creating a new box
             const { x, y } = e.target.getStage().getPointerPosition();
-            setNewBox({ x, y, width: 0, height: 0, label: drawingLabel });
+            setNewBox({
+                x,
+                y,
+                width: 0,
+                height: 0,
+                label: formatLabel(drawingLabel),
+            });
         }
     };
 

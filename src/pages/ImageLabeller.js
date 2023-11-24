@@ -281,18 +281,33 @@ export default function ImageLabeller() {
     useEffect(() => {
         const newLabelColors = {};
         Array.from(labels).forEach((label, index) => {
-            const formattedLabel = label.toLowerCase().trim().replace(/\s+/g, '_');
+            const formattedLabel = label
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, "_");
             newLabelColors[formattedLabel] = generateColor(index, 90, 65);
         });
         setLabelColors(newLabelColors);
     }, [labels]);
-    
 
     useEffect(() => {
         console.log("Boxes changed:", boxes);
     }, [boxes]);
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        const existingLabels = new Set(
+            Array.from(labels).map((label) =>
+                label.toLowerCase().replace(/\s+/g, "_")
+            )
+        );
+        // Only update if there is a change
+        const filteredBoxes = boxes.filter((box) =>
+            existingLabels.has(box.label.toLowerCase())
+        );
+        if (filteredBoxes.length !== boxes.length) {
+            setBoxes(filteredBoxes);
+        }
+    }, [labels, boxes]);
 
     return (
         <Box sx={{ padding: 2 }}>
