@@ -1,5 +1,5 @@
 const fs = require("fs");
-const sharp = require("sharp");
+const Jimp = require('jimp');
 const path = require("path");
 const crypto = require("crypto");
 
@@ -46,12 +46,10 @@ class ImageHandler {
         }
     }
 
-    // Helper function to asynchronously get image dimensions
     getImageDimensions = async (imagePath) => {
         try {
-            const image = sharp(imagePath);
-            const metadata = await image.metadata();
-            return { width: metadata.width, height: metadata.height };
+            const image = await Jimp.read(imagePath);
+            return { width: image.bitmap.width, height: image.bitmap.height };
         } catch (error) {
             console.error(`Error reading image dimensions: ${error}`);
             return { width: null, height: null };

@@ -1,7 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
-const sharp = require("sharp");
+const Jimp = require("jimp");
 
 class DownloadHandler {
     async fetchImageUrls(
@@ -101,12 +101,12 @@ class DownloadHandler {
                     headers: { "User-Agent": userAgent },
                 });
 
-                const image = sharp(response.data);
+                const image = await Jimp.read(Buffer.from(response.data));
                 const imageFormat =
                     response.headers["content-type"].split("/")[1];
                 const filename = `image_${i + startNum + 1}.${imageFormat}`;
 
-                await image.toFile(path.join(folderPath, filename));
+                await image.writeAsync(path.join(folderPath, filename));
                 console.log(`Downloaded image ${i + startNum + 1}`);
 
                 event.sender.send("download-progress", {

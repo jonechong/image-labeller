@@ -20,14 +20,17 @@ function createWindow() {
             webSecurity: false,
             preload: path.join(__dirname, "preload.js"),
             nodeIntegration: true,
-            devTools: process.env.NODE_ENV !== "production",
+            // devTools: process.env.NODE_ENV !== "production",
         },
         autoHideMenuBar: true, // Add this line
     });
-
+    if (process.env.NODE_ENV !== "production") {
+        mainWindow.webContents.openDevTools();
+    }
     const startUrl = isDev
-        ? "http://localhost:3000" // Dev URL
-        : `file://${path.join(__dirname, "../build/index.html")}`; // Prod URL
+        ? "http://localhost:3000"
+        : `file://${path.join(__dirname, "../build/index.html")}`;
+
     mainWindow.loadURL(startUrl);
 
     mainWindow.maximize();
