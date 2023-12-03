@@ -20,13 +20,11 @@ function createWindow() {
             webSecurity: false,
             preload: path.join(__dirname, "preload.js"),
             nodeIntegration: true,
-            // devTools: process.env.NODE_ENV !== "production",
+            devTools: process.env.NODE_ENV !== "production",
         },
-        autoHideMenuBar: true, // Add this line
+        autoHideMenuBar: true,
     });
-    if (process.env.NODE_ENV !== "production") {
-        mainWindow.webContents.openDevTools();
-    }
+
     const startUrl = isDev
         ? "http://localhost:3000"
         : `file://${path.join(__dirname, "../build/index.html")}`;
