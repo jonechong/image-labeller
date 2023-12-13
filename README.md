@@ -16,9 +16,3 @@ This feature will allow users to label their image with bounding boxes or freefo
 
 ## Frameworks
 Electron-React Application
-
-## Use Case Diagram
-In prog
-
-## Software architecture
-In prog
